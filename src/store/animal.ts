@@ -178,6 +178,50 @@ export const useAnimalStore = defineStore('animal', () => {
   // 初始化时从本地存储加载数据
   loadFromLocalStorage()
   
+  // 如果没有数据，添加一些模拟数据
+  if (animals.value.length === 0) {
+    const mockAnimals: Animal[] = [
+      {
+        id: 'animal-1',
+        name: '金毛犬',
+        image: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=400&h=300&fit=crop',
+        confidence: 0.95,
+        description: '金毛犬是一种大型犬，性格温顺，是很好的家庭宠物。',
+        species: '犬科',
+        habitat: '家庭',
+        date: new Date().toISOString()
+      },
+      {
+        id: 'animal-2',
+        name: '橘猫',
+        image: 'https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=300&fit=crop',
+        confidence: 0.88,
+        description: '橘猫是常见的家猫品种，性格活泼好动。',
+        species: '猫科',
+        habitat: '家庭',
+        date: new Date(Date.now() - 86400000).toISOString()
+      },
+      {
+        id: 'animal-3',
+        name: '哈士奇',
+        image: 'https://images.unsplash.com/photo-1605568427561-40dd23c2acea?w=400&h=300&fit=crop',
+        confidence: 0.92,
+        description: '哈士奇是一种工作犬，精力充沛，需要大量运动。',
+        species: '犬科',
+        habitat: '家庭',
+        date: new Date(Date.now() - 172800000).toISOString()
+      }
+    ]
+    
+    animals.value = mockAnimals
+    saveToLocalStorage()
+  }
+  
+  // 添加loadAnimals方法别名
+  const loadAnimals = () => {
+    loadFromLocalStorage()
+  }
+  
   return {
     // 状态
     animals,
@@ -205,6 +249,7 @@ export const useAnimalStore = defineStore('animal', () => {
     
     // 存储方法
     saveToLocalStorage,
-    loadFromLocalStorage
+    loadFromLocalStorage,
+    loadAnimals
   }
 })

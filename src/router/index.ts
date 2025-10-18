@@ -10,6 +10,12 @@ const router = createRouter({
       meta: { title: '首页', preload: true }
     },
     {
+      path: '/test',
+      name: 'Test',
+      component: () => import(/* webpackChunkName: "test" */ '../pages/TestPage.vue'),
+      meta: { title: '测试页面' }
+    },
+    {
       path: '/diagnosis',
       name: 'Diagnosis',
       component: () => import(/* webpackChunkName: "diagnosis" */ '../pages/DiagnosisPage.vue'),

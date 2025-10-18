@@ -101,6 +101,7 @@
 
 <script setup>
 import { ref, nextTick, onMounted } from 'vue'
+import { debounce, throttle, performanceMonitor } from '../utils/performance'
 
 // 响应式数据
 const messages = ref([])
@@ -136,6 +137,30 @@ const addMessage = (type, content) => {
   scrollToBottom()
 }
 
+// 防抖发送消息
+const debouncedSendMessage = debounce(async (message) => {
+  if (!message.trim() || isLoading.value) return
+  
+  // 添加用户消息
+  addMessage('user', message)
+  
+  // 显示加载状态
+  isLoading.value = true
+  performanceMonitor.mark('llm-request-start')
+  
+  try {
+    // 这里连接你的LLM API
+    const aiResponse = await callLLMAPI(message)
+    addMessage('ai', aiResponse)
+    performanceMonitor.measure('llm-request-duration', 'llm-request-start')
+  } catch (error) {
+    console.error('LLM API调用失败:', error)
+    addMessage('ai', '抱歉，我现在无法回答你的问题。请稍后再试。')
+  } finally {
+    isLoading.value = false
+  }
+}, 300)
+
 // 发送消息
 const handleSendMessage = async () => {
   if (!inputMessage.value.trim() || isLoading.value) return
@@ -143,22 +168,7 @@ const handleSendMessage = async () => {
   const userMessage = inputMessage.value.trim()
   inputMessage.value = ''
   
-  // 添加用户消息
-  addMessage('user', userMessage)
-  
-  // 显示加载状态
-  isLoading.value = true
-  
-  try {
-    // 这里连接你的LLM API
-    const aiResponse = await callLLMAPI(userMessage)
-    addMessage('ai', aiResponse)
-  } catch (error) {
-    console.error('LLM API调用失败:', error)
-    addMessage('ai', '抱歉，我现在无法回答你的问题。请稍后再试。')
-  } finally {
-    isLoading.value = false
-  }
+  debouncedSendMessage(userMessage)
 }
 
 // 发送快捷问题

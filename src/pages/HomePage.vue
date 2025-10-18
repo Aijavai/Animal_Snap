@@ -18,26 +18,12 @@
       
       <!-- 搜索栏 -->
       <div class="search-container">
-        <div class="search-bar">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
-            <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          <input 
-            type="text" 
-            placeholder="搜索动物、栖息地..." 
-            v-model="searchQuery"
-            @input="handleSearch"
-          />
-          <button class="voice-btn" @click="startVoiceSearch">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" stroke="currentColor" stroke-width="2"/>
-              <path d="M19 10v2a7 7 0 0 1-14 0v-2" stroke="currentColor" stroke-width="2"/>
-              <line x1="12" y1="19" x2="12" y2="23" stroke="currentColor" stroke-width="2"/>
-              <line x1="8" y1="23" x2="16" y2="23" stroke="currentColor" stroke-width="2"/>
-            </svg>
-          </button>
-        </div>
+        <SearchBar
+          v-model="searchQuery"
+          placeholder="搜索动物、栖息地..."
+          @search="handleSearch"
+          @voice-search="startVoiceSearch"
+        />
       </div>
     </div>
 
@@ -133,28 +119,20 @@
         <button class="view-all-btn" @click="goToCamera">查看全部</button>
       </div>
       <div class="animals-grid">
-        <div 
-          v-for="animal in recentAnimals" 
+        <AnimalCard
+          v-for="animal in recentAnimals"
           :key="animal.id"
-          class="animal-card"
-          @click="viewAnimalDetail(animal.id)"
-        >
-          <div class="animal-image">
-            <img :src="animal.image" :alt="animal.name" loading="lazy" />
-            <button 
-              class="favorite-btn" 
-              :class="{ active: favorites.includes(animal.id) }"
-              @click.stop="toggleFavorite(animal.id)"
-            >
-              {{ favorites.includes(animal.id) ? '❤️' : '🤍' }}
-            </button>
-          </div>
-          <div class="animal-info">
-            <h4>{{ animal.name }}</h4>
-            <p>{{ animal.species }}</p>
-            <span class="animal-date">{{ formatDate(animal.identifiedAt) }}</span>
-          </div>
-        </div>
+          :id="animal.id"
+          :name="animal.name"
+          :image-url="animal.image"
+          :species="animal.species"
+          :confidence="animal.confidence"
+          :date="animal.date"
+          :is-favorite="favorites.includes(animal.id)"
+          size="small"
+          @click="viewAnimalDetail"
+          @favorite="toggleFavorite"
+        />
       </div>
     </div>
 
@@ -179,6 +157,9 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnimalStore } from '../store/animal'
+import { debounce, throttle, performanceMonitor } from '../utils/performance'
+import SearchBar from '../components/SearchBar.vue'
+import AnimalCard from '../components/AnimalCard.vue'
 
 const router = useRouter()
 const animalStore = useAnimalStore()
@@ -190,23 +171,37 @@ const favorites = ref([])
 const animalStats = computed(() => animalStore.getAnimalStats())
 const recentAnimals = computed(() => animalStore.recentAnimals)
 
-// 方法
-const handleSearch = () => {
-  if (searchQuery.value.trim()) {
-    console.log('搜索:', searchQuery.value)
+// 防抖搜索
+const debouncedSearch = debounce((query) => {
+  if (query.trim()) {
+    performanceMonitor.mark('search-start')
+    console.log('搜索:', query)
+    // 这里可以添加实际的搜索逻辑
+    performanceMonitor.measure('search-duration', 'search-start')
   }
+}, 300)
+
+// 节流语音搜索
+const throttledVoiceSearch = throttle(() => {
+  console.log('开始语音搜索')
+  // 这里可以添加语音搜索逻辑
+}, 1000)
+
+// 方法
+const handleSearch = (query) => {
+  debouncedSearch(query)
 }
 
 const startVoiceSearch = () => {
-  console.log('开始语音搜索')
+  throttledVoiceSearch()
 }
 
-const toggleFavorite = (animalId) => {
+const toggleFavorite = (animalId, isFavorite) => {
   const index = favorites.value.indexOf(animalId)
-  if (index > -1) {
-    favorites.value.splice(index, 1)
-  } else {
+  if (isFavorite && index === -1) {
     favorites.value.push(animalId)
+  } else if (!isFavorite && index > -1) {
+    favorites.value.splice(index, 1)
   }
 }
 
@@ -226,16 +221,11 @@ const viewAnimalDetail = (id) => {
   router.push(`/animal-detail/${id}`)
 }
 
-const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('zh-CN', {
-    month: 'short',
-    day: 'numeric'
-  })
-}
-
 onMounted(() => {
-  // 页面加载时的初始化
-  console.log('首页加载完成')
+  performanceMonitor.mark('home-page-mounted')
+  animalStore.loadAnimals()
+  favorites.value = ['animal-1', 'animal-3']
+  performanceMonitor.measure('home-page-load', 'home-page-mounted')
 })
 </script>
 
@@ -305,53 +295,6 @@ onMounted(() => {
 /* 搜索栏 */
 .search-container {
   margin-bottom: 20px;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 25px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-}
-
-.search-icon {
-  color: #6B7280;
-  margin-right: 12px;
-}
-
-.search-bar input {
-  flex: 1;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  color: #1F2937;
-  background: transparent;
-}
-
-.search-bar input::placeholder {
-  color: #9CA3AF;
-}
-
-.voice-btn {
-  background: #4F46E5;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.voice-btn:hover {
-  background: #3730A3;
-  transform: scale(1.05);
 }
 
 /* 快速操作 */
@@ -518,75 +461,6 @@ onMounted(() => {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
-}
-
-.animal-card {
-  background: #F8FAFC;
-  border-radius: 12px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.animal-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-}
-
-.animal-image {
-  position: relative;
-  height: 120px;
-  overflow: hidden;
-}
-
-.animal-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.favorite-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: rgba(255, 255, 255, 0.9);
-  border: none;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 16px;
-  transition: all 0.2s ease;
-}
-
-.favorite-btn.active {
-  background: #EF4444;
-  color: white;
-}
-
-.animal-info {
-  padding: 12px;
-}
-
-.animal-info h4 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 4px;
-}
-
-.animal-info p {
-  font-size: 12px;
-  color: #6B7280;
-  margin-bottom: 4px;
-}
-
-.animal-date {
-  font-size: 10px;
-  color: #9CA3AF;
 }
 
 /* 底部提示 */

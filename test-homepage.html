@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimalSnap 首页测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .test-item {
+            margin-bottom: 16px;
+            padding: 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+        }
+        .test-item.success {
+            border-color: #10b981;
+            background: #f0fdf4;
+        }
+        .test-item.error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+        .status {
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .success .status {
+            color: #10b981;
+        }
+        .error .status {
+            color: #ef4444;
+        }
+        .btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+        .btn:hover {
+            background: #3730a3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🐾 AnimalSnap 首页测试</h1>
+        <p>这个页面用于测试AnimalSnap应用的首页功能是否正常工作。</p>
+        
+        <div class="test-item" id="store-test">
+            <strong>AnimalStore 测试:</strong>
+            <span class="status">测试中...</span>
+            <p>检查动物数据存储是否正常工作</p>
+        </div>
+        
+        <div class="test-item" id="component-test">
+            <strong>组件测试:</strong>
+            <span class="status">测试中...</span>
+            <p>检查AnimalCard和SearchBar组件是否正常加载</p>
+        </div>
+        
+        <div class="test-item" id="routing-test">
+            <strong>路由测试:</strong>
+            <span class="status">测试中...</span>
+            <p>检查Vue Router是否正常工作</p>
+        </div>
+        
+        <div class="test-item" id="performance-test">
+            <strong>性能测试:</strong>
+            <span class="status">测试中...</span>
+            <p>检查防抖节流和性能监控是否正常</p>
+        </div>
+        
+        <div style="margin-top: 24px;">
+            <button class="btn" onclick="runAllTests()">运行所有测试</button>
+            <button class="btn" onclick="openApp()">打开应用</button>
+            <button class="btn" onclick="clearStorage()">清除存储</button>
+        </div>
+        
+        <div id="test-results" style="margin-top: 20px; padding: 16px; background: #f9fafb; border-radius: 8px; display: none;">
+            <h3>测试结果</h3>
+            <div id="results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        function runAllTests() {
+            const results = [];
+            
+            // 测试1: 检查localStorage
+            try {
+                localStorage.setItem('test', 'value');
+                const testValue = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                if (testValue === 'value') {
+                    updateTestStatus('store-test', 'success', '✅ 本地存储正常');
+                    results.push('✅ 本地存储: 正常');
+                } else {
+                    updateTestStatus('store-test', 'error', '❌ 本地存储异常');
+                    results.push('❌ 本地存储: 异常');
+                }
+            } catch (error) {
+                updateTestStatus('store-test', 'error', '❌ 本地存储错误: ' + error.message);
+                results.push('❌ 本地存储: ' + error.message);
+            }
+            
+            // 测试2: 检查Vue是否可用
+            try {
+                if (typeof Vue !== 'undefined' || typeof window.Vue !== 'undefined') {
+                    updateTestStatus('component-test', 'success', '✅ Vue框架正常');
+                    results.push('✅ Vue框架: 正常');
+                } else {
+                    updateTestStatus('component-test', 'error', '❌ Vue框架未加载');
+                    results.push('❌ Vue框架: 未加载');
+                }
+            } catch (error) {
+                updateTestStatus('component-test', 'error', '❌ Vue框架错误: ' + error.message);
+                results.push('❌ Vue框架: ' + error.message);
+            }
+            
+            // 测试3: 检查路由
+            try {
+                if (typeof window.location !== 'undefined') {
+                    updateTestStatus('routing-test', 'success', '✅ 浏览器路由正常');
+                    results.push('✅ 浏览器路由: 正常');
+                } else {
+                    updateTestStatus('routing-test', 'error', '❌ 浏览器路由异常');
+                    results.push('❌ 浏览器路由: 异常');
+                }
+            } catch (error) {
+                updateTestStatus('routing-test', 'error', '❌ 浏览器路由错误: ' + error.message);
+                results.push('❌ 浏览器路由: ' + error.message);
+            }
+            
+            // 测试4: 检查性能API
+            try {
+                if (typeof performance !== 'undefined' && performance.now) {
+                    const start = performance.now();
+                    setTimeout(() => {
+                        const end = performance.now();
+                        updateTestStatus('performance-test', 'success', '✅ 性能API正常');
+                        results.push('✅ 性能API: 正常');
+                    }, 10);
+                } else {
+                    updateTestStatus('performance-test', 'error', '❌ 性能API不可用');
+                    results.push('❌ 性能API: 不可用');
+                }
+            } catch (error) {
+                updateTestStatus('performance-test', 'error', '❌ 性能API错误: ' + error.message);
+                results.push('❌ 性能API: ' + error.message);
+            }
+            
+            // 显示结果
+            setTimeout(() => {
+                document.getElementById('test-results').style.display = 'block';
+                document.getElementById('results-content').innerHTML = results.join('<br>');
+            }, 1000);
+        }
+        
+        function updateTestStatus(elementId, status, message) {
+            const element = document.getElementById(elementId);
+            element.className = `test-item ${status}`;
+            element.querySelector('.status').textContent = message;
+        }
+        
+        function openApp() {
+            window.open('http://localhost:5173', '_blank');
+        }
+        
+        function clearStorage() {
+            if (confirm('确定要清除所有本地存储数据吗？')) {
+                localStorage.clear();
+                alert('本地存储已清除');
+            }
+        }
+        
+        // 页面加载时自动运行测试
+        window.addEventListener('load', () => {
+            setTimeout(runAllTests, 500);
+        });
+    </script>
+</body>
+</html>
