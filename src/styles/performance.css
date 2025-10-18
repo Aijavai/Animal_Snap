@@ -1,0 +1,347 @@
+/* 性能优化 CSS */
+
+/* 硬件加速 */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* 优化动画性能 */
+.animate-transform {
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.animate-opacity {
+  transition: opacity 0.2s ease;
+  will-change: opacity;
+}
+
+/* 避免重排重绘 */
+.no-reflow {
+  contain: layout style paint;
+}
+
+/* 优化滚动性能 */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 图片优化 */
+.optimized-image {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 减少重绘 */
+.no-paint {
+  contain: paint;
+}
+
+/* 优化字体渲染 */
+.optimized-text {
+  text-rendering: optimizeSpeed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 虚拟滚动容器 */
+.virtual-scroll-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  contain: layout style paint;
+}
+
+/* 懒加载占位符 */
+.lazy-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* 优化按钮点击 */
+.button-optimized {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 优化卡片动画 */
+.card-optimized {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+.card-optimized:hover {
+  transform: translate3d(0, -2px, 0);
+  transition: transform 0.2s ease;
+}
+
+/* 优化列表渲染 */
+.list-optimized {
+  contain: layout style;
+  content-visibility: auto;
+}
+
+/* 优化模态框 */
+.modal-optimized {
+  contain: layout style paint;
+  will-change: opacity, transform;
+}
+
+/* 优化渐变背景 */
+.gradient-optimized {
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+}
+
+/* 优化阴影 */
+.shadow-optimized {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+/* 优化边框 */
+.border-optimized {
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+
+/* 优化圆角 */
+.rounded-optimized {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 优化透明度 */
+.opacity-optimized {
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+/* 优化变换 */
+.transform-optimized {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+/* 优化滤镜 */
+.filter-optimized {
+  filter: blur(0);
+  will-change: filter;
+}
+
+/* 优化网格布局 */
+.grid-optimized {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  contain: layout;
+}
+
+/* 优化弹性布局 */
+.flex-optimized {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  contain: layout;
+}
+
+/* 优化文本选择 */
+.text-optimized {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* 优化滚动条 */
+.scrollbar-optimized::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-optimized::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.scrollbar-optimized::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.scrollbar-optimized::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 优化焦点状态 */
+.focus-optimized:focus {
+  outline: 2px solid #4F46E5;
+  outline-offset: 2px;
+}
+
+/* 优化禁用状态 */
+.disabled-optimized:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* 优化加载状态 */
+.loading-optimized {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-optimized::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* 优化响应式图片 */
+.responsive-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* 优化视频 */
+.responsive-video {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* 优化图标 */
+.icon-optimized {
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor;
+}
+
+/* 优化 SVG */
+.svg-optimized {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* 优化 Canvas */
+.canvas-optimized {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* 优化 WebGL */
+.webgl-optimized {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* 优化 3D 变换 */
+.transform3d-optimized {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* 优化关键帧动画 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale3d(0.8, 0.8, 1);
+    opacity: 0;
+  }
+  to {
+    transform: scale3d(1, 1, 1);
+    opacity: 1;
+  }
+}
+
+/* 优化动画类 */
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* 优化媒体查询 */
+@media (prefers-reduced-motion: reduce) {
+  .animate-transform,
+  .animate-opacity,
+  .animate-fadeIn,
+  .animate-slideIn,
+  .animate-scaleIn {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* 优化打印样式 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-optimized {
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+  }
+}
