@@ -44,7 +44,9 @@
             :class="{ selected: selectedCategory === category.id }"
             @click="selectCategory(category.id)"
           >
-            <div class="category-icon">{{ category.icon }}</div>
+            <div class="category-icon">
+              <van-icon :name="category.icon" size="32" color="#4F46E5" />
+            </div>
             <h4>{{ category.name }}</h4>
             <p>{{ category.description }}</p>
           </div>
@@ -63,11 +65,7 @@
         <h3>上传动物照片</h3>
         <div class="upload-area" @click="triggerFileUpload">
           <div v-if="!uploadedImage" class="upload-placeholder">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <polyline points="17,8 21,12 17,16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <van-icon name="photograph" size="48" color="#9CA3AF" />
             <p>点击上传照片</p>
             <span>支持 JPG、PNG 格式</span>
           </div>
@@ -126,16 +124,31 @@
           <div class="result-header">
             <h3>诊断结果</h3>
             <div class="confidence-score">
-              <span>置信度: {{ diagnosisResult.confidence }}%</span>
+              <span>置信度: {{ Math.round(diagnosisResult.confidence) }}%</span>
             </div>
           </div>
           
           <div class="result-content">
             <div class="health-status" :class="diagnosisResult.status">
               <div class="status-icon">
-                <span v-if="diagnosisResult.status === 'healthy'">✅</span>
-                <span v-else-if="diagnosisResult.status === 'warning'">⚠️</span>
-                <span v-else>🚨</span>
+                <van-icon 
+                  v-if="diagnosisResult.status === 'healthy'" 
+                  name="success" 
+                  size="32" 
+                  color="#10B981" 
+                />
+                <van-icon 
+                  v-else-if="diagnosisResult.status === 'warning'" 
+                  name="warning" 
+                  size="32" 
+                  color="#F59E0B" 
+                />
+                <van-icon 
+                  v-else 
+                  name="warning-o" 
+                  size="32" 
+                  color="#EF4444" 
+                />
               </div>
               <div class="status-text">
                 <h4>{{ diagnosisResult.title }}</h4>
@@ -181,7 +194,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -199,37 +212,37 @@ const animalCategories = ref([
   {
     id: 'dog',
     name: '犬类',
-    icon: '🐕',
+    icon: 'dog',
     description: '包括各种犬种'
   },
   {
     id: 'cat',
     name: '猫类',
-    icon: '🐱',
+    icon: 'cat',
     description: '包括各种猫种'
   },
   {
     id: 'bird',
     name: '鸟类',
-    icon: '🐦',
+    icon: 'bird',
     description: '包括各种鸟类'
   },
   {
     id: 'fish',
     name: '鱼类',
-    icon: '🐠',
+    icon: 'fish',
     description: '包括各种鱼类'
   },
   {
     id: 'reptile',
     name: '爬行动物',
-    icon: '🦎',
+    icon: 'reptile',
     description: '包括蜥蜴、蛇类等'
   },
   {
     id: 'other',
     name: '其他',
-    icon: '🐾',
+    icon: 'paw',
     description: '其他动物类型'
   }
 ])
@@ -304,7 +317,7 @@ const removeImage = () => {
 }
 
 const startAnalysis = () => {
-  const statuses = [
+  const statuses: string[] = [
     '正在上传图片...',
     'AI 正在识别动物特征...',
     '分析健康状况...',
@@ -314,19 +327,21 @@ const startAnalysis = () => {
   
   let statusIndex = 0
   const interval = setInterval(() => {
-    analysisStatus.value = statuses[statusIndex]
-    analysisProgress.value = ((statusIndex + 1) / statuses.length) * 100
-    
-    statusIndex++
-    
-    if (statusIndex >= statuses.length) {
-      clearInterval(interval)
-      // 使用 nextTick 确保 DOM 更新完成
-      nextTick(() => {
-        setTimeout(() => {
-          nextStep()
-        }, 1000)
-      })
+    if (statusIndex < statuses.length) {
+      analysisStatus.value = statuses[statusIndex] || ''
+      analysisProgress.value = ((statusIndex + 1) / statuses.length) * 100
+      
+      statusIndex++
+      
+      if (statusIndex >= statuses.length) {
+        clearInterval(interval)
+        // 使用 nextTick 确保 DOM 更新完成
+        nextTick(() => {
+          setTimeout(() => {
+            nextStep()
+          }, 1000)
+        })
+      }
     }
   }, 1500) // 减少等待时间提升响应性
 }
@@ -366,26 +381,27 @@ onMounted(() => {
 <style scoped>
 .diagnosis-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 16px;
+  background: #F9FAFB;
+  padding: 16px;
   padding-bottom: 100px;
 }
 
 .page-header {
   text-align: center;
-  color: white;
-  margin-bottom: 30px;
+  color: #111827;
+  margin-bottom: 24px;
+  padding-top: 8px;
 }
 
 .page-header h1 {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
   margin-bottom: 8px;
 }
 
 .page-header p {
-  font-size: 16px;
-  opacity: 0.9;
+  font-size: 14px;
+  color: #6B7280;
 }
 
 /* 步骤指示器 */
@@ -397,76 +413,77 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 20px;
-  backdrop-filter: blur(10px);
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #E5E7EB;
 }
 
 .step {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.6);
-  transition: all 0.3s ease;
+  gap: 6px;
+  color: #9CA3AF;
+  transition: all 0.2s ease;
+  font-size: 12px;
 }
 
 .step.active {
-  color: white;
+  color: #111827;
 }
 
 .step.completed {
-  color: #10B981;
+  color: #6B7280;
 }
 
 .step-number {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
+  background: #F3F4F6;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 13px;
+  transition: all 0.2s ease;
 }
 
 .step.active .step-number {
-  background: #4F46E5;
+  background: #1F2937;
   color: white;
 }
 
 .step.completed .step-number {
-  background: #10B981;
+  background: #6B7280;
   color: white;
 }
 
 .step-line {
   width: 40px;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.2);
-  margin: 0 10px;
-  transition: all 0.3s ease;
+  height: 1px;
+  background: #E5E7EB;
+  margin: 0 8px;
+  transition: all 0.2s ease;
 }
 
 .step-line.active {
-  background: #4F46E5;
+  background: #1F2937;
 }
 
 /* 步骤内容 */
 .step-content {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 30px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #E5E7EB;
 }
 
 .step-panel h3 {
-  font-size: 24px;
-  font-weight: 700;
-  color: #1F2937;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
   margin-bottom: 20px;
   text-align: center;
 }
@@ -480,24 +497,23 @@ onMounted(() => {
 }
 
 .category-card {
-  background: #f8fafc;
-  border: 2px solid transparent;
-  border-radius: 16px;
-  padding: 20px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 16px;
   text-align: center;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  will-change: transform;
+  transition: all 0.2s ease;
 }
 
 .category-card:hover {
-  transform: translate3d(0, -2px, 0);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: #1F2937;
+  transform: translateY(-1px);
 }
 
 .category-card.selected {
-  border-color: #4F46E5;
-  background: #f0f4ff;
+  border-color: #1F2937;
+  background: #F3F4F6;
 }
 
 .category-icon {
@@ -506,15 +522,15 @@ onMounted(() => {
 }
 
 .category-card h4 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 6px;
 }
 
 .category-card p {
-  font-size: 12px;
-  color: #6B7280;
+  font-size: 11px;
+  color: #9CA3AF;
 }
 
 /* 上传区域 */
@@ -529,8 +545,8 @@ onMounted(() => {
 }
 
 .upload-area:hover {
-  border-color: #4F46E5;
-  background: #f0f4ff;
+  border-color: #1F2937;
+  background: #F9FAFB;
 }
 
 .upload-placeholder {
@@ -636,7 +652,7 @@ onMounted(() => {
   left: 50%;
   width: 60px;
   height: 60px;
-  border: 3px solid #4F46E5;
+  border: 2px solid #1F2937;
   border-radius: 50%;
   transform: translate3d(-50%, -50%, 0);
   animation: pulse 2s infinite;
@@ -673,7 +689,7 @@ onMounted(() => {
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #4F46E5, #7C3AED);
+  background: #1F2937;
   border-radius: 4px;
   transition: width 0.3s ease;
 }
@@ -693,12 +709,12 @@ onMounted(() => {
 }
 
 .confidence-score {
-  background: #f0f4ff;
-  color: #4F46E5;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 14px;
+  background: #F3F4F6;
+  color: #111827;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 13px;
 }
 
 .health-status {
@@ -730,9 +746,9 @@ onMounted(() => {
 }
 
 .status-text h4 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 600;
-  color: #1F2937;
+  color: #111827;
   margin-bottom: 4px;
 }
 
@@ -750,10 +766,10 @@ onMounted(() => {
 .diagnosis-details h4,
 .recommendations h4,
 .expert-advice h4 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 12px;
+  color: #111827;
+  margin-bottom: 10px;
 }
 
 .diagnosis-details ul,
@@ -774,17 +790,17 @@ onMounted(() => {
 .diagnosis-details li::before,
 .recommendations li::before {
   content: '•';
-  color: #4F46E5;
+  color: #6B7280;
   font-weight: bold;
   position: absolute;
   left: 0;
 }
 
 .expert-advice {
-  background: #f8fafc;
-  padding: 20px;
+  background: #F9FAFB;
+  padding: 16px;
   border-radius: 12px;
-  border-left: 4px solid #4F46E5;
+  border-left: 3px solid #1F2937;
 }
 
 .expert-advice p {
@@ -797,23 +813,22 @@ onMounted(() => {
 .btn-primary,
 .btn-secondary,
 .btn-outline {
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   border: none;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  background: #1F2937;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+  background: #374151;
 }
 
 .btn-primary:disabled {
@@ -822,23 +837,23 @@ onMounted(() => {
 }
 
 .btn-secondary {
-  background: #f3f4f6;
-  color: #374151;
+  background: #F3F4F6;
+  color: #4B5563;
 }
 
 .btn-secondary:hover {
-  background: #e5e7eb;
+  background: #E5E7EB;
 }
 
 .btn-outline {
   background: transparent;
-  color: #4F46E5;
-  border: 1px solid #4F46E5;
+  color: #1F2937;
+  border: 1px solid #E5E7EB;
 }
 
 .btn-outline:hover {
-  background: #4F46E5;
-  color: white;
+  background: #F3F4F6;
+  border-color: #1F2937;
 }
 
 .step-actions {

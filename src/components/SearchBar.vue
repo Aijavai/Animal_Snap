@@ -10,10 +10,13 @@
       ref="inputRef"
       v-model="searchQuery"
       :placeholder="placeholder"
+      :readonly="readonly"
+      :autofocus="autofocus"
       @input="handleInput"
       @focus="handleFocus"
       @blur="handleBlur"
       @keydown.enter="handleSearch"
+      @click="handleReadonlyClick"
       class="search-input"
     />
     <button 
@@ -58,6 +61,8 @@ interface Props {
   debounceDelay?: number
   throttleDelay?: number
   modelValue?: string
+  readonly?: boolean
+  autofocus?: boolean
 }
 
 interface Emits {
@@ -75,7 +80,9 @@ const props = withDefaults(defineProps<Props>(), {
   showClearButton: true,
   debounceDelay: 300,
   throttleDelay: 1000,
-  modelValue: ''
+  modelValue: '',
+  readonly: false,
+  autofocus: false
 })
 
 const emit = defineEmits<Emits>()
@@ -144,6 +151,13 @@ watch(() => props.modelValue, (newValue) => {
   searchQuery.value = newValue
 })
 
+// 处理只读输入框点击
+const handleReadonlyClick = () => {
+  if (props.readonly) {
+    emit('focus')
+  }
+}
+
 // 暴露方法
 const focus = () => {
   inputRef.value?.focus()
@@ -163,18 +177,15 @@ defineExpose({
 .search-bar {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 25px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
+  background: white;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s ease;
 }
 
 .search-bar.focused {
-  border-color: #4F46E5;
-  box-shadow: 0 4px 20px rgba(79, 70, 229, 0.2);
+  border-color: #1F2937;
 }
 
 .search-icon {
@@ -190,6 +201,11 @@ defineExpose({
   font-size: 16px;
   color: #1F2937;
   background: transparent;
+  cursor: text;
+}
+
+.search-input[readonly] {
+  cursor: pointer;
 }
 
 .search-input::placeholder {
@@ -198,25 +214,24 @@ defineExpose({
 
 .voice-button,
 .clear-button {
-  background: #4F46E5;
+  background: #1F2937;
   color: white;
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-left: 8px;
+  margin-left: 6px;
   flex-shrink: 0;
 }
 
 .voice-button:hover:not(:disabled),
 .clear-button:hover {
-  background: #3730A3;
-  transform: scale(1.05);
+  background: #374151;
 }
 
 .voice-button:disabled {
@@ -225,11 +240,11 @@ defineExpose({
 }
 
 .clear-button {
-  background: #EF4444;
+  background: #6B7280;
 }
 
 .clear-button:hover {
-  background: #DC2626;
+  background: #4B5563;
 }
 
 /* 语音搜索动画 */

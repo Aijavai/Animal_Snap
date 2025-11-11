@@ -6,25 +6,39 @@
     </main>
     
     <!-- 底部导航栏 -->
-    <div class="bottom-nav">
+    <div v-if="showBottomNav" class="bottom-nav">
       <div class="nav-item" :class="{ active: activeTab === 'home' }" @click="goToPage('home')">
         <div class="nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" :stroke="activeTab === 'home' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <polyline points="9,22 9,12 15,12 15,22" :stroke="activeTab === 'home' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <van-icon name="home-o" :color="activeTab === 'home' ? '#1F2937' : '#9CA3AF'" size="22" />
         </div>
         <span class="nav-label">首页</span>
       </div>
       
       <div class="nav-item" :class="{ active: activeTab === 'diagnosis' }" @click="goToPage('diagnosis')">
         <div class="nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M9 12l2 2 4-4" :stroke="activeTab === 'diagnosis' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M21 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" :stroke="activeTab === 'diagnosis' ? '#4F46E5' : '#6B7280'" stroke-width="2"/>
-            <path d="M3 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" :stroke="activeTab === 'diagnosis' ? '#4F46E5' : '#6B7280'" stroke-width="2"/>
-            <path d="M12 21c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" :stroke="activeTab === 'diagnosis' ? '#4F46E5' : '#6B7280'" stroke-width="2"/>
-            <path d="M12 3c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" :stroke="activeTab === 'diagnosis' ? '#4F46E5' : '#6B7280'" stroke-width="2"/>
+          <svg 
+            width="24" 
+            height="24" 
+            viewBox="0 0 24 24" 
+            fill="none" 
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle 
+              cx="12" 
+              cy="12" 
+              r="10" 
+              :stroke="activeTab === 'diagnosis' ? '#1F2937' : '#9CA3AF'"
+              stroke-width="2"
+              fill="none"
+            />
+            <path 
+              d="M9 12l2 2 4-4" 
+              :stroke="activeTab === 'diagnosis' ? '#1F2937' : '#9CA3AF'"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              fill="none"
+            />
           </svg>
         </div>
         <span class="nav-label">诊断</span>
@@ -33,31 +47,20 @@
       <!-- 拍照按钮 (中间，特殊样式) -->
       <div class="camera-tab" @click="goToPage('camera')">
         <div class="camera-button">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
-            <circle cx="12" cy="13" r="4" stroke="currentColor" stroke-width="2"/>
-          </svg>
+          <van-icon name="photograph" color="white" size="32" />
         </div>
       </div>
       
       <div class="nav-item" :class="{ active: activeTab === 'expert' }" @click="goToPage('expert')">
         <div class="nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" :stroke="activeTab === 'expert' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="7" r="4" :stroke="activeTab === 'expert' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75" :stroke="activeTab === 'expert' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M6 21v-2a4 4 0 0 1 4-4h.5" :stroke="activeTab === 'expert' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <van-icon name="service" :color="activeTab === 'expert' ? '#1F2937' : '#9CA3AF'" size="22" />
         </div>
         <span class="nav-label">专家</span>
       </div>
       
       <div class="nav-item" :class="{ active: activeTab === 'profile' }" @click="goToPage('profile')">
         <div class="nav-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" :stroke="activeTab === 'profile' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="12" cy="7" r="4" :stroke="activeTab === 'profile' ? '#4F46E5' : '#6B7280'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          <van-icon name="user-o" :color="activeTab === 'profile' ? '#1F2937' : '#9CA3AF'" size="22" />
         </div>
         <span class="nav-label">我的</span>
       </div>
@@ -66,7 +69,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
@@ -74,6 +77,13 @@ const route = useRoute()
 
 // 当前激活的标签页
 const activeTab = ref('home')
+
+// 是否显示底部导航栏
+const showBottomNav = computed(() => {
+  // 如果路由元信息中明确设置了 showNav: false，则隐藏导航栏
+  // 默认显示导航栏
+  return route.meta.showNav !== false
+})
 
 // 路由到标签页的映射
 const routeToTab = {
@@ -95,16 +105,37 @@ const tabToRoute = {
 
 // 监听路由变化，更新激活的标签页
 watch(() => route.path, (newPath) => {
+  // 精确匹配
   const tab = routeToTab[newPath]
   if (tab) {
     activeTab.value = tab
+    return
+  }
+  
+  // 模糊匹配：对于动态路由（如 /animal-detail/:id），检查路径前缀
+  if (newPath.startsWith('/animal-detail')) {
+    // 详情页保持当前标签状态或回到首页
+    // 可以根据需要调整逻辑
+    return
+  }
+  
+  // 特殊页面（search, test 等）保持当前激活状态
+  const specialPages = ['/test', '/search']
+  if (specialPages.includes(newPath)) {
+    return
+  }
+  
+  // 如果是不在导航栏中的路由，重置为首页
+  if (!tab && !newPath.startsWith('/animal-detail') && !specialPages.includes(newPath)) {
+    activeTab.value = 'home'
   }
 }, { immediate: true })
 
 // 页面跳转处理
 const goToPage = (tab) => {
   const path = tabToRoute[tab]
-  if (path && path !== route.path) {
+  if (path) {
+    // 如果当前在详情页或其他页面，允许导航
     router.push(path)
   }
 }
@@ -115,7 +146,7 @@ const goToPage = (tab) => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: var(--color-bg-secondary);
 }
 
 .main-content {
@@ -129,11 +160,10 @@ const goToPage = (tab) => {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: white;
-  border-top: 1px solid #e5e7eb;
-  padding: 8px 0;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom));
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border);
+  padding: 10px 0;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
   position: relative;
 }
 
@@ -142,19 +172,18 @@ const goToPage = (tab) => {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 8px 12px;
+  padding: 6px 12px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border-radius: 8px;
   min-width: 60px;
 }
 
 .nav-item:hover {
-  background: #f3f4f6;
+  opacity: 0.7;
 }
 
 .nav-item.active {
-  color: #4F46E5;
+  color: var(--color-primary);
 }
 
 .nav-icon {
@@ -163,12 +192,19 @@ const goToPage = (tab) => {
   justify-content: center;
   width: 24px;
   height: 24px;
+  transition: all 0.3s ease;
 }
 
 .nav-label {
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-text-tertiary);
+  transition: all 0.2s ease;
+}
+
+.nav-item.active .nav-label {
+  color: var(--color-primary);
   font-weight: 500;
-  color: inherit;
 }
 
 /* 拍照按钮特殊样式 */
@@ -179,90 +215,49 @@ const goToPage = (tab) => {
 }
 
 .camera-button {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+  width: 56px;
+  height: 56px;
+  background: var(--color-accent);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
-  margin: -8px auto 0;
-  border: 3px solid white;
+  margin: -4px auto 0;
+  border: none;
 }
 
 .camera-button::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%);
-  border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: -1;
+  display: none;
 }
 
 .camera-button:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
-}
-
-.camera-button:hover::before {
-  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+  filter: brightness(1.1);
 }
 
 .camera-button:active {
-  transform: translateY(0) scale(0.95);
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
 }
 
-.camera-button svg {
+.camera-button .van-icon {
   color: white;
-  transition: all 0.3s ease;
-}
-
-.camera-button:hover svg {
-  transform: scale(1.1);
-}
-
-/* 拍照按钮脉冲动画 */
-@keyframes camera-pulse {
-  0% {
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
-  }
-  50% {
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.8), 0 0 0 10px rgba(79, 70, 229, 0.1);
-  }
-  100% {
-    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.5);
-  }
-}
-
-.camera-button {
-  animation: camera-pulse 3s ease-in-out infinite;
-}
-
-.camera-button:hover {
-  animation: none;
+  transition: all 0.2s ease;
 }
 
 /* 移动端适配 */
 @media (max-width: 480px) {
   .camera-button {
-    width: 56px;
-    height: 56px;
-    margin: -6px auto 0;
+    width: 52px;
+    height: 52px;
   }
   
-  .camera-button svg {
-    width: 28px;
-    height: 28px;
+  .camera-button .van-icon {
+    font-size: 26px;
   }
   
   .nav-item {
@@ -271,23 +266,9 @@ const goToPage = (tab) => {
   }
   
   .nav-label {
-    font-size: 11px;
+    font-size: 10px;
   }
 }
 
-/* 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .main-layout {
-    background: #0f172a;
-  }
-  
-  .bottom-nav {
-    background: #1e293b;
-    border-top-color: #334155;
-  }
-  
-  .nav-item:hover {
-    background: #334155;
-  }
-}
+/* 主题已通过CSS变量处理，移除媒体查询 */
 </style>

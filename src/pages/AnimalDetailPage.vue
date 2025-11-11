@@ -35,7 +35,7 @@
       <div class="animal-image-section">
         <img :src="animal.image" :alt="animal.name" class="animal-image" />
         <div class="image-overlay">
-          <div class="confidence-badge">{{ animal.confidence }}%</div>
+          <div class="confidence-badge">{{ Math.round(animal.confidence * 100) }}%</div>
           <button class="favorite-btn" @click="toggleFavorite">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
@@ -67,7 +67,7 @@
           </div>
           <div class="detail-item">
             <div class="detail-label">置信度</div>
-            <div class="detail-value">{{ animal.confidence }}%</div>
+            <div class="detail-value">{{ Math.round(animal.confidence * 100) }}%</div>
           </div>
         </div>
       </div>
@@ -174,7 +174,7 @@ const editAnimal = () => {
 const deleteAnimal = () => {
   if (confirm('确定要删除这只动物吗？')) {
     animalStore.removeAnimal(animalId.value)
-    router.push('/collection')
+    router.push('/')
   }
 }
 

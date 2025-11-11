@@ -19,10 +19,14 @@
       <!-- 搜索栏 -->
       <div class="search-container">
         <SearchBar
+          ref="searchBarRef"
           v-model="searchQuery"
           placeholder="搜索动物、栖息地..."
           @search="handleSearch"
           @voice-search="startVoiceSearch"
+          @focus="goToSearchPage"
+          @clear="handleSearchClear"
+          readonly
         />
       </div>
     </div>
@@ -112,8 +116,38 @@
       </div>
     </div>
 
+    <!-- 搜索结果 -->
+    <div v-if="isSearching && searchQuery.trim()" class="search-results">
+      <div class="section-header">
+        <h2>搜索结果</h2>
+        <span class="result-count">{{ searchResults.length }} 个结果</span>
+      </div>
+      <div v-if="searchResults.length > 0" class="animals-grid">
+        <AnimalCard
+          v-for="animal in searchResults"
+          :key="animal.id"
+          :id="animal.id"
+          :name="animal.name"
+          :image-url="animal.image"
+          :species="animal.species"
+          :confidence="animal.confidence"
+          :date="animal.date"
+          :is-favorite="favorites.includes(animal.id)"
+          size="small"
+          @click="viewAnimalDetail"
+          @favorite="toggleFavorite"
+        />
+      </div>
+      <div v-else class="empty-search">
+        <div class="empty-icon">🔍</div>
+        <h3>未找到相关动物</h3>
+        <p>试试其他关键词或使用拍照识别功能</p>
+        <button class="btn-primary" @click="goToCamera">开始拍照识别</button>
+      </div>
+    </div>
+
     <!-- 最近动物 -->
-    <div class="recent-animals">
+    <div v-else class="recent-animals">
       <div class="section-header">
         <h2>最近识别</h2>
         <button class="view-all-btn" @click="goToCamera">查看全部</button>
@@ -153,50 +187,306 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted } from 'vue'
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnimalStore } from '../store/animal'
-import { debounce, throttle, performanceMonitor } from '../utils/performance'
+import { debounce, throttle } from '../utils/performance'
 import SearchBar from '../components/SearchBar.vue'
 import AnimalCard from '../components/AnimalCard.vue'
 
 const router = useRouter()
 const animalStore = useAnimalStore()
 
-const searchQuery = ref('')
-const favorites = ref([])
+const searchQuery = ref<string>('')
+const favorites = ref<string[]>([])
+const showSearchSuggestions = ref<boolean>(false)
+const searchBarRef = ref<any>(null)
+
+// 搜索相关
+const isSearching = computed(() => {
+  try {
+    return searchQuery.value && searchQuery.value.trim().length > 0
+  } catch {
+    return false
+  }
+})
+
+const searchResults = computed(() => {
+  try {
+    if (!searchQuery.value || !searchQuery.value.trim()) return []
+    return animalStore.searchAnimals(searchQuery.value) || []
+  } catch (error) {
+    console.error('搜索失败:', error)
+    return []
+  }
+})
+
+// 热门搜索
+const hotSearches = ref<string[]>([
+  '金毛犬',
+  '橘猫',
+  '哈士奇',
+  '鸟类',
+  '鱼类'
+])
+
+// 搜索历史
+const searchHistory = ref<string[]>([])
+
+// 搜索建议（基于输入内容）
+// @ts-expect-error - 预留功能
+const searchSuggestions = computed<string[]>(() => {
+  try {
+    if (!searchQuery.value || !searchQuery.value.trim()) return []
+    
+    const query = searchQuery.value.toLowerCase().trim()
+    if (!query) return []
+    
+    const suggestions = new Set<string>()
+    
+    // 从所有动物中提取可能的建议
+    try {
+      if (animalStore.animals && Array.isArray(animalStore.animals) && animalStore.animals.length > 0) {
+        animalStore.animals.forEach(animal => {
+          try {
+            if (animal && animal.name && typeof animal.name === 'string' && animal.name.toLowerCase().includes(query)) {
+              suggestions.add(animal.name)
+            }
+            if (animal && animal.species && typeof animal.species === 'string' && animal.species.toLowerCase().includes(query)) {
+              suggestions.add(animal.species)
+            }
+            if (animal && animal.habitat && typeof animal.habitat === 'string' && animal.habitat.toLowerCase().includes(query)) {
+              suggestions.add(animal.habitat)
+            }
+          } catch (e) {
+            // 跳过单个动物处理错误
+          }
+        })
+      }
+    } catch (e) {
+      console.warn('处理动物数据时出错:', e)
+    }
+    
+    // 添加热门搜索匹配项
+    try {
+      if (hotSearches.value && Array.isArray(hotSearches.value) && hotSearches.value.length > 0) {
+        hotSearches.value.forEach(hot => {
+          try {
+            if (hot && typeof hot === 'string' && hot.toLowerCase().includes(query)) {
+              suggestions.add(hot)
+            }
+          } catch (e) {
+            // 跳过单个热门搜索项处理错误
+          }
+        })
+      }
+    } catch (e) {
+      console.warn('处理热门搜索时出错:', e)
+    }
+    
+    return Array.from(suggestions).slice(0, 5)
+  } catch (error) {
+    console.error('生成搜索建议失败:', error)
+    return []
+  }
+})
 
 // 计算属性
-const animalStats = computed(() => animalStore.getAnimalStats())
-const recentAnimals = computed(() => animalStore.recentAnimals)
+const animalStats = computed(() => {
+  try {
+    return animalStore.getAnimalStats() || {
+      totalAnimals: 0,
+      favoriteCount: 0,
+      accuracy: 0,
+      thisWeek: 0,
+      total: 0,
+      averageConfidence: 0,
+      mostCommonAnimal: null,
+      recentCount: 0
+    }
+  } catch (error) {
+    console.error('获取统计信息失败:', error)
+    return {
+      totalAnimals: 0,
+      favoriteCount: 0,
+      accuracy: 0,
+      thisWeek: 0,
+      total: 0,
+      averageConfidence: 0,
+      mostCommonAnimal: null,
+      recentCount: 0
+    }
+  }
+})
+
+const recentAnimals = computed(() => {
+  try {
+    return animalStore.recentAnimals || []
+  } catch (error) {
+    console.error('获取最近动物失败:', error)
+    return []
+  }
+})
 
 // 防抖搜索
-const debouncedSearch = debounce((query) => {
+const debouncedSearch = debounce((query: string) => {
   if (query.trim()) {
-    performanceMonitor.mark('search-start')
-    console.log('搜索:', query)
-    // 这里可以添加实际的搜索逻辑
-    performanceMonitor.measure('search-duration', 'search-start')
+    // 添加到搜索历史
+    addToSearchHistory(query)
   }
 }, 300)
 
 // 节流语音搜索
 const throttledVoiceSearch = throttle(() => {
-  console.log('开始语音搜索')
-  // 这里可以添加语音搜索逻辑
+  startVoiceRecognition()
 }, 1000)
 
 // 方法
-const handleSearch = (query) => {
-  debouncedSearch(query)
+const handleSearch = (query: string) => {
+  try {
+    if (query && query.trim()) {
+      debouncedSearch(query)
+      showSearchSuggestions.value = false
+    }
+  } catch (error) {
+    console.error('搜索处理失败:', error)
+  }
+}
+
+// @ts-expect-error - 预留功能
+const handleSearchFocus = () => {
+  goToSearchPage()
+}
+
+const goToSearchPage = () => {
+  router.push('/search')
+}
+
+const handleSearchClear = () => {
+  showSearchSuggestions.value = false
+}
+
+// @ts-expect-error - 预留功能
+const selectSearchSuggestion = (text: string) => {
+  searchQuery.value = text
+  handleSearch(text)
+  showSearchSuggestions.value = false
+}
+
+// @ts-expect-error - 预留功能
+const highlightText = (text: string, query: string): string => {
+  try {
+    if (!text || !query || !query.trim()) return text || ''
+    // 转义特殊字符
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const regex = new RegExp(`(${escapedQuery})`, 'gi')
+    return text.replace(regex, '<mark>$1</mark>')
+  } catch (error) {
+    console.error('高亮文本失败:', error)
+    return text || ''
+  }
+}
+
+// 搜索历史管理
+const addToSearchHistory = (query: string) => {
+  if (!query.trim()) return
+  
+  const index = searchHistory.value.indexOf(query)
+  if (index > -1) {
+    // 如果已存在，移到最前面
+    searchHistory.value.splice(index, 1)
+  }
+  
+  searchHistory.value.unshift(query)
+  
+  // 限制历史记录数量
+  if (searchHistory.value.length > 10) {
+    searchHistory.value = searchHistory.value.slice(0, 10)
+  }
+  
+  saveSearchHistory()
+}
+
+// @ts-expect-error - 预留功能
+const removeFromHistory = (index: number) => {
+  searchHistory.value.splice(index, 1)
+  saveSearchHistory()
+}
+
+// @ts-expect-error - 预留功能
+const clearSearchHistory = () => {
+  if (confirm('确定要清除搜索历史吗？')) {
+    searchHistory.value = []
+    saveSearchHistory()
+  }
+}
+
+const saveSearchHistory = () => {
+  try {
+    localStorage.setItem('animalsnap-search-history', JSON.stringify(searchHistory.value))
+  } catch (error) {
+    console.error('保存搜索历史失败:', error)
+  }
+}
+
+const loadSearchHistory = () => {
+  try {
+    const stored = localStorage.getItem('animalsnap-search-history')
+    if (stored) {
+      searchHistory.value = JSON.parse(stored)
+    }
+  } catch (error) {
+    console.error('加载搜索历史失败:', error)
+  }
+}
+
+// 语音识别
+const startVoiceRecognition = () => {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('您的浏览器不支持语音识别功能')
+    return
+  }
+  
+  try {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    const recognition = new SpeechRecognition()
+    
+    recognition.lang = 'zh-CN'
+    recognition.continuous = false
+    recognition.interimResults = false
+    
+    recognition.onstart = () => {
+      console.log('开始语音识别...')
+    }
+    
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript
+      searchQuery.value = transcript
+      handleSearch(transcript)
+    }
+    
+    recognition.onerror = (event: any) => {
+      console.error('语音识别错误:', event.error)
+      alert('语音识别失败，请重试')
+    }
+    
+    recognition.onend = () => {
+      console.log('语音识别结束')
+    }
+    
+    recognition.start()
+  } catch (error) {
+    console.error('语音识别初始化失败:', error)
+    alert('语音识别功能不可用')
+  }
 }
 
 const startVoiceSearch = () => {
   throttledVoiceSearch()
 }
 
-const toggleFavorite = (animalId, isFavorite) => {
+const toggleFavorite = (animalId: string, isFavorite: boolean) => {
   const index = favorites.value.indexOf(animalId)
   if (isFavorite && index === -1) {
     favorites.value.push(animalId)
@@ -217,23 +507,39 @@ const goToExpert = () => {
   router.push('/expert')
 }
 
-const viewAnimalDetail = (id) => {
+const viewAnimalDetail = (id: string) => {
   router.push(`/animal-detail/${id}`)
 }
 
+// 点击外部关闭搜索建议
+const handleClickOutside = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (!target.closest('.search-container') && showSearchSuggestions.value) {
+    showSearchSuggestions.value = false
+  }
+}
+
 onMounted(() => {
-  performanceMonitor.mark('home-page-mounted')
-  animalStore.loadAnimals()
-  favorites.value = ['animal-1', 'animal-3']
-  performanceMonitor.measure('home-page-load', 'home-page-mounted')
+  try {
+    animalStore.loadAnimals()
+    favorites.value = ['animal-1', 'animal-3']
+    loadSearchHistory()
+    document.addEventListener('click', handleClickOutside)
+  } catch (error) {
+    console.error('页面初始化失败:', error)
+  }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
 <style scoped>
 .home-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px 16px;
+  background: var(--color-bg-secondary);
+  padding: 16px;
   padding-bottom: 100px;
 }
 
@@ -246,29 +552,29 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .greeting h1 {
-  font-size: 24px;
-  font-weight: 700;
-  color: white;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
   margin-bottom: 4px;
 }
 
 .greeting p {
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  color: var(--color-text-secondary);
 }
 
 .weather-info {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--color-bg-primary);
   padding: 8px 12px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
 }
 
 .weather-icon {
@@ -282,19 +588,198 @@ onMounted(() => {
 }
 
 .temperature {
-  font-size: 16px;
-  font-weight: 600;
-  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-text-primary);
 }
 
 .location {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 11px;
+  color: var(--color-text-tertiary);
 }
 
 /* 搜索栏 */
 .search-container {
   margin-bottom: 20px;
+  position: relative;
+}
+
+/* 搜索建议下拉框 */
+.search-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(20px);
+  z-index: 100;
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid rgba(79, 70, 229, 0.1);
+}
+
+.suggestions-section {
+  padding: 16px;
+}
+
+.suggestions-section + .suggestions-section {
+  border-top: 1px solid #f3f4f6;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 12px;
+}
+
+.section-title svg {
+  color: #6B7280;
+}
+
+.clear-history-btn {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.clear-history-btn:hover {
+  background: #F3F4F6;
+  color: #1F2937;
+}
+
+/* 热门搜索标签 */
+.hot-searches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hot-search-tag {
+  background: #F3F4F6;
+  color: #4B5563;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hot-search-tag:hover {
+  background: #1F2937;
+  color: white;
+  border-color: #1F2937;
+}
+
+/* 搜索历史 */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: #f8fafc;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.history-item:hover {
+  background: #F3F4F6;
+}
+
+.history-item svg:first-child {
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.history-item span {
+  flex: 1;
+  color: #1F2937;
+  font-size: 14px;
+}
+
+.remove-history {
+  background: none;
+  border: none;
+  color: #9CA3AF;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-history:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* 搜索建议列表 */
+.suggestions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f8fafc;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.suggestion-item:hover {
+  background: #F3F4F6;
+}
+
+.suggestion-item svg {
+  color: #6B7280;
+  flex-shrink: 0;
+}
+
+.suggestion-item span {
+  flex: 1;
+  color: #1F2937;
+  font-size: 14px;
+}
+
+.suggestion-item span mark {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0 2px;
+  border-radius: 2px;
+  font-weight: 600;
 }
 
 /* 快速操作 */
@@ -303,72 +788,43 @@ onMounted(() => {
 }
 
 .action-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
+  background: var(--color-bg-primary);
+  border-radius: 16px;
   padding: 20px;
-  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  margin-bottom: 12px;
 }
 
 .action-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-primary);
 }
 
 .action-card.primary {
-  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  background: var(--color-accent);
   color: white;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.action-card.secondary {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.action-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.action-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.action-card.secondary .action-icon {
-  background: #F3F4F6;
-  width: 40px;
-  height: 40px;
+  border: none;
 }
 
 .action-content h3 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.action-content h4 {
   font-size: 16px;
   font-weight: 600;
-  color: #1F2937;
-  margin-bottom: 2px;
+  margin: 0 0 4px 0;
+  color: var(--color-text-primary);
+}
+
+.action-card.primary .action-content h3 {
+  color: white;
 }
 
 .action-content p {
-  font-size: 14px;
+  font-size: 13px;
+  margin: 0;
   opacity: 0.8;
 }
 
@@ -379,19 +835,18 @@ onMounted(() => {
 
 /* 统计仪表板 */
 .stats-dashboard {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 30px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #E5E7EB;
 }
 
 .stats-dashboard h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1F2937;
-  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
 }
 
 .stats-grid {
@@ -403,10 +858,15 @@ onMounted(() => {
 .stat-card {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  background: #F8FAFC;
+  gap: 10px;
+  padding: 14px;
+  background: #F9FAFB;
   border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  background: #F3F4F6;
 }
 
 .stat-icon {
@@ -414,25 +874,62 @@ onMounted(() => {
 }
 
 .stat-content h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1F2937;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
   margin-bottom: 2px;
 }
 
 .stat-content p {
-  font-size: 12px;
+  font-size: 11px;
+  color: #9CA3AF;
+}
+
+/* 搜索结果 */
+.search-results {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #E5E7EB;
+}
+
+.result-count {
+  font-size: 14px;
   color: #6B7280;
+  font-weight: 500;
+}
+
+.empty-search {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.empty-search h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.empty-search p {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin-bottom: 20px;
 }
 
 /* 最近动物 */
 .recent-animals {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 30px;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #E5E7EB;
 }
 
 .section-header {
@@ -443,18 +940,23 @@ onMounted(() => {
 }
 
 .section-header h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1F2937;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
 }
 
 .view-all-btn {
   background: none;
   border: none;
-  color: #4F46E5;
-  font-size: 14px;
-  font-weight: 500;
+  color: #6B7280;
+  font-size: 13px;
+  font-weight: 400;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.view-all-btn:hover {
+  color: #111827;
 }
 
 .animals-grid {
@@ -465,45 +967,43 @@ onMounted(() => {
 
 /* 底部提示 */
 .bottom-tip {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 20px;
-  padding: 30px;
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
   text-align: center;
-  backdrop-filter: blur(20px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border: 1px solid #E5E7EB;
 }
 
 .tip-content h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1F2937;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
   margin-bottom: 8px;
 }
 
 .tip-content p {
-  font-size: 14px;
-  color: #6B7280;
-  margin-bottom: 20px;
+  font-size: 13px;
+  color: #9CA3AF;
+  margin-bottom: 16px;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  background: #1F2937;
   color: white;
   border: none;
-  border-radius: 25px;
-  padding: 12px 24px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  gap: 6px;
+  transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+  background: #374151;
 }
 
 /* 移动端适配 */
@@ -528,6 +1028,95 @@ onMounted(() => {
   
   .action-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .home-page {
+    background: #111827;
+  }
+  
+  .greeting h1 {
+    color: #F9FAFB;
+  }
+  
+  .greeting p {
+    color: #9CA3AF;
+  }
+  
+  .weather-info {
+    background: #1F2937;
+    border-color: #374151;
+  }
+  
+  .temperature {
+    color: #F9FAFB;
+  }
+  
+  .location {
+    color: #9CA3AF;
+  }
+  
+  .action-card {
+    background: #1F2937;
+    border-color: #374151;
+  }
+  
+  .action-card.primary {
+    background: #F9FAFB;
+    color: #111827;
+  }
+  
+  .action-card.secondary .action-icon {
+    background: #374151;
+  }
+  
+  .action-content h4 {
+    color: #F9FAFB;
+  }
+  
+  .stats-dashboard,
+  .search-results,
+  .recent-animals,
+  .bottom-tip {
+    background: #1F2937;
+    border-color: #374151;
+  }
+  
+  .stats-dashboard h2,
+  .section-header h2,
+  .tip-content h3 {
+    color: #F9FAFB;
+  }
+  
+  .stat-card {
+    background: #111827;
+  }
+  
+  .stat-content h3 {
+    color: #F9FAFB;
+  }
+  
+  .btn-primary {
+    background: #F9FAFB;
+    color: #111827;
+  }
+  
+  .btn-primary:hover {
+    background: #E5E7EB;
+  }
+  
+  .hot-search-tag {
+    background: #374151;
+    color: #D1D5DB;
+    border-color: #4B5563;
+  }
+  
+  .hot-search-tag:hover {
+    background: #F9FAFB;
+    color: #111827;
+    border-color: #F9FAFB;
   }
 }
 </style>

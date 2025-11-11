@@ -15,14 +15,6 @@ export default defineConfig({
         }
       }
     },
-    // 压缩选项
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
-      }
-    },
     // 资源内联阈值
     assetsInlineLimit: 4096
   },

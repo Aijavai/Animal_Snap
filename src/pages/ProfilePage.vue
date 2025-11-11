@@ -71,20 +71,83 @@
       <div class="menu-group">
         <h3>设置</h3>
         <div class="menu-items">
-          <div class="menu-item" @click="toggleTheme">
+          <div class="menu-item" @click="showThemeOptions = !showThemeOptions">
             <div class="menu-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <svg v-if="userStore.currentTheme === 'light'" width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
                 <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <svg v-else-if="userStore.currentTheme === 'dark'" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg v-else width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="2"/>
               </svg>
             </div>
             <div class="menu-content">
               <span class="menu-title">主题设置</span>
-              <span class="menu-subtitle">{{ userStore.currentTheme === 'dark' ? '深色模式' : '浅色模式' }}</span>
+              <span class="menu-subtitle">{{ themeLabel }}</span>
             </div>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-              <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" :class="{ 'rotate-180': showThemeOptions }">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
+          </div>
+          
+          <!-- 主题选项下拉 -->
+          <div v-if="showThemeOptions" class="theme-options">
+            <div 
+              class="theme-option"
+              :class="{ active: userStore.currentTheme === 'light' }"
+              @click="setTheme('light')"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <div class="theme-option-content">
+                <span class="theme-option-title">浅色模式</span>
+                <span class="theme-option-desc">适合白天使用</span>
+              </div>
+              <svg v-if="userStore.currentTheme === 'light'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17l-5-5" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            
+            <div 
+              class="theme-option"
+              :class="{ active: userStore.currentTheme === 'dark' }"
+              @click="setTheme('dark')"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="theme-option-content">
+                <span class="theme-option-title">深色模式</span>
+                <span class="theme-option-desc">适合夜间使用</span>
+              </div>
+              <svg v-if="userStore.currentTheme === 'dark'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17l-5-5" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            
+            <div 
+              class="theme-option"
+              :class="{ active: userStore.currentTheme === 'auto' }"
+              @click="setTheme('auto')"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                <path d="M3 9h18M9 21V9" stroke="currentColor" stroke-width="2"/>
+              </svg>
+              <div class="theme-option-content">
+                <span class="theme-option-title">跟随系统</span>
+                <span class="theme-option-desc">自动匹配系统设置</span>
+              </div>
+              <svg v-if="userStore.currentTheme === 'auto'" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17l-5-5" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
           </div>
           
           <div class="menu-item" @click="toggleNotifications">
@@ -96,7 +159,7 @@
             </div>
             <div class="menu-content">
               <span class="menu-title">通知设置</span>
-              <span class="menu-subtitle">{{ userStore.settings.receiveNotifications ? '已开启' : '已关闭' }}</span>
+              <span class="menu-subtitle">{{ userStore.settings.notifications ? '已开启' : '已关闭' }}</span>
             </div>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
               <path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -145,19 +208,33 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
+<script setup lang="ts">
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAnimalStore } from '../store/animal'
 import { useUserStore } from '../store/user'
+import { useNotificationStore } from '../store/notifications'
 
 const router = useRouter()
 const animalStore = useAnimalStore()
 const userStore = useUserStore()
+const notificationStore = useNotificationStore()
+
+// 状态
+const showThemeOptions = ref(false)
 
 // 计算属性
 const animalStats = computed(() => animalStore.getAnimalStats())
 const userStats = computed(() => userStore.userStats)
+
+const themeLabel = computed(() => {
+  const themeMap = {
+    'light': '浅色模式',
+    'dark': '深色模式',
+    'auto': '跟随系统'
+  }
+  return themeMap[userStore.currentTheme] || '浅色模式'
+})
 
 // 方法
 const goToCollection = () => {
@@ -175,8 +252,9 @@ const exportData = () => {
   link.click()
 }
 
-const toggleTheme = () => {
-  userStore.toggleTheme()
+const setTheme = (theme: 'light' | 'dark' | 'auto') => {
+  userStore.updateSettings({ theme })
+  showThemeOptions.value = false
 }
 
 const toggleNotifications = () => {
@@ -188,9 +266,43 @@ const showAbout = () => {
 }
 
 const clearData = () => {
-  if (confirm('确定要清除所有数据吗？此操作不可恢复！')) {
-    animalStore.clearAllAnimals()
-    alert('数据已清除')
+  if (confirm('确定要清除所有缓存数据吗？此操作不可恢复！\n\n将清除：\n- 所有识别的动物数据\n- 诊断历史记录\n- 通知消息\n- 用户设置（将恢复默认设置）')) {
+    try {
+      // 清除动物数据
+      animalStore.clearAllAnimals()
+      
+      // 清除通知数据
+      notificationStore.clearAll()
+      
+      // 清除诊断结果
+      localStorage.removeItem('diagnosisResults')
+      
+      // 重置用户设置（但保留基本设置结构）
+      userStore.resetSettings()
+      
+      // 清除所有相关的 localStorage 数据
+      const keysToRemove = [
+        'animalsnap-animals',
+        'animalsnap-notifications',
+        'animalsnap-user',
+        'diagnosisResults'
+      ]
+      
+      keysToRemove.forEach(key => {
+        try {
+          localStorage.removeItem(key)
+        } catch (error) {
+          console.warn(`清除 ${key} 失败:`, error)
+        }
+      })
+      
+      // 重新加载页面以确保状态同步
+      alert('所有缓存数据已清除！')
+      window.location.reload()
+    } catch (error) {
+      console.error('清除数据时出错:', error)
+      alert('清除数据时出错，请重试')
+    }
   }
 }
 </script>
@@ -198,25 +310,25 @@ const clearData = () => {
 <style scoped>
 .profile-page {
   min-height: 100vh;
-  background: #f8fafc;
-  padding-bottom: 100px; /* 为底部导航留空间 */
+  background: var(--color-bg-secondary);
+  padding-bottom: 100px;
 }
 
 .user-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 40px 20px 30px;
+  background: var(--color-bg-primary);
+  padding: 24px 16px;
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
 .user-avatar {
-  width: 80px;
-  height: 80px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   overflow: hidden;
-  border: 4px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid #E5E7EB;
   flex-shrink: 0;
 }
 
@@ -231,15 +343,15 @@ const clearData = () => {
 }
 
 .user-info h2 {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
 }
 
 .user-info p {
-  font-size: 16px;
-  opacity: 0.9;
-  margin: 0 0 20px 0;
+  font-size: 13px;
+  color: #6B7280;
+  margin: 0 0 12px 0;
 }
 
 .user-stats {
@@ -253,47 +365,48 @@ const clearData = () => {
 
 .stat-number {
   display: block;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--color-text-primary);
 }
 
 .stat-label {
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 11px;
+  color: var(--color-text-tertiary);
 }
 
 .menu-section {
-  padding: 20px;
+  padding: 16px;
 }
 
 .menu-group {
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .menu-group h3 {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
-  color: #6b7280;
-  margin: 0 0 12px 0;
+  color: var(--color-text-tertiary);
+  margin: 0 0 8px 16px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
 }
 
 .menu-items {
-  background: white;
-  border-radius: 16px;
+  background: var(--color-bg-primary);
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 16px 20px;
+  padding: 14px 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid #f3f4f6;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid var(--color-border-light);
 }
 
 .menu-item:last-child {
@@ -301,19 +414,23 @@ const clearData = () => {
 }
 
 .menu-item:hover {
-  background: #f9fafb;
+  background: var(--color-bg-secondary);
 }
 
 .menu-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #f3f4f6;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--color-bg-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 16px;
+  margin-right: 12px;
   flex-shrink: 0;
+}
+
+.menu-icon svg {
+  color: var(--color-secondary);
 }
 
 .menu-content {
@@ -324,18 +441,98 @@ const clearData = () => {
 }
 
 .menu-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-  color: #1f2937;
+  color: var(--color-text-primary);
 }
 
 .menu-subtitle {
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
 }
 
 .menu-item svg:last-child {
-  color: #9ca3af;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  transition: transform 0.3s ease;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* 主题选项样式 */
+.theme-options {
+  padding: 8px;
+  background: var(--color-bg-tertiary);
+  border-top: 1px solid var(--color-border);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.theme-option {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--color-bg-primary);
+  border: 2px solid transparent;
+}
+
+.theme-option:last-child {
+  margin-bottom: 0;
+}
+
+.theme-option:hover {
+  background: var(--color-bg-secondary);
+  transform: translateX(4px);
+}
+
+.theme-option.active {
+  border-color: var(--color-accent);
+  background: var(--color-bg-secondary);
+}
+
+.theme-option svg:first-child {
+  color: var(--color-secondary);
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.theme-option-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.theme-option-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.theme-option-desc {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.theme-option svg:last-child {
   flex-shrink: 0;
 }
 

@@ -5,10 +5,11 @@ import './style.css'
 import App from './App.vue'
 
 // 导入 Vant 组件
-import { Tabbar, TabbarItem } from 'vant'
+import { Tabbar, TabbarItem, Icon } from 'vant'
 import 'vant/lib/index.css'
 import 'vant/es/tabbar/style'
 import 'vant/es/tabbar-item/style'
+import 'vant/es/icon/style'
 
 const app = createApp(App)
 
@@ -18,5 +19,6 @@ app.use(router)
 // 注册 Vant 组件
 app.use(Tabbar)
 app.use(TabbarItem)
+app.use(Icon)
 
 app.mount('#app')

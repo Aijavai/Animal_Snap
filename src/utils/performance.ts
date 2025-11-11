@@ -206,7 +206,9 @@ export const memoryManager = {
     if (this.cache.size >= this.maxSize) {
       // LRU策略：删除最旧的
       const oldestKey = this.cache.keys().next().value
-      this.cache.delete(oldestKey)
+      if (oldestKey) {
+        this.cache.delete(oldestKey)
+      }
     }
     this.cache.set(key, value)
   },

@@ -2,17 +2,17 @@
   <div class="my-plants-page">
     <div class="page-header">
       <h1>我的植物</h1>
-      <p class="plant-count">已识别 {{ plantStore.plants.length }} 种植物</p>
+      <p class="plant-count">已识别 {{ animalStore.animals.length }} 种动物</p>
     </div>
     
-    <div v-if="plantStore.plants.length === 0" class="empty-state">
+    <div v-if="animalStore.animals.length === 0" class="empty-state">
       <div class="empty-icon">
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
           <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <h3>还没有识别过植物</h3>
-      <p>点击下方相机按钮开始识别植物吧！</p>
+      <h3>还没有识别过动物</h3>
+      <p>点击下方相机按钮开始识别动物吧！</p>
       <button class="start-btn" @click="goToCamera">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
@@ -24,7 +24,7 @@
     
     <div v-else class="plants-grid">
       <div 
-        v-for="plant in plantStore.plants" 
+        v-for="plant in animalStore.animals" 
         :key="plant.id"
         class="plant-card"
         @click="viewPlantDetail(plant)"
@@ -61,8 +61,8 @@ const viewPlantDetail = (plant: any) => {
 
 // 删除植物
 const deletePlant = (plantId: string) => {
-  if (confirm('确定要删除这个植物吗？')) {
-    plantStore.removePlant(plantId)
+  if (confirm('确定要删除这个动物吗？')) {
+    animalStore.removeAnimal(plantId)
   }
 }
 

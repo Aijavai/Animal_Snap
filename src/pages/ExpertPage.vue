@@ -99,16 +99,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, nextTick, onMounted } from 'vue'
-import { debounce, throttle, performanceMonitor } from '../utils/performance'
+import { debounce, performanceMonitor } from '../utils/performance'
+
+interface Message {
+  id: number
+  type: 'user' | 'ai'
+  content: string
+  timestamp: Date
+}
 
 // 响应式数据
-const messages = ref([])
+const messages = ref<Message[]>([])
 const inputMessage = ref('')
 const isLoading = ref(false)
-const chatContainer = ref(null)
-const messageInput = ref(null)
+const chatContainer = ref<HTMLElement | null>(null)
+const messageInput = ref<HTMLTextAreaElement | null>(null)
 
 // 快捷问题
 const quickQuestions = ref([
@@ -126,8 +133,8 @@ onMounted(() => {
 })
 
 // 添加消息
-const addMessage = (type, content) => {
-  const message = {
+const addMessage = (type: 'user' | 'ai', content: string) => {
+  const message: Message = {
     id: Date.now() + Math.random(),
     type,
     content,
@@ -138,7 +145,7 @@ const addMessage = (type, content) => {
 }
 
 // 防抖发送消息
-const debouncedSendMessage = debounce(async (message) => {
+const debouncedSendMessage = debounce(async (message: string) => {
   if (!message.trim() || isLoading.value) return
   
   // 添加用户消息
@@ -172,13 +179,13 @@ const handleSendMessage = async () => {
 }
 
 // 发送快捷问题
-const sendQuickQuestion = (question) => {
+const sendQuickQuestion = (question: string) => {
   inputMessage.value = question
   handleSendMessage()
 }
 
 // 调用LLM API (这里需要你实现具体的API调用)
-const callLLMAPI = async (message) => {
+const callLLMAPI = async (_message: string): Promise<string> => {
   // 模拟API调用延迟
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000))
   
@@ -187,30 +194,31 @@ const callLLMAPI = async (message) => {
   // const response = await fetch('/api/llm', {
   //   method: 'POST',
   //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ message })
+  //   body: JSON.stringify({ message: _message })
   // })
   // const data = await response.json()
   // return data.response
   
   // 临时模拟回复
-  const responses = [
+  const responses: string[] = [
     '这是一个很好的问题！让我来为你详细解答...',
     '根据我的知识，这个问题涉及到几个方面...',
     '我理解你的疑问。在动物学中，这个问题...',
     '这是一个常见的动物相关问题，让我为你分析一下...',
     '基于我的专业知识，我可以告诉你...'
   ]
-  return responses[Math.floor(Math.random() * responses.length)]
+  const randomIndex = Math.floor(Math.random() * responses.length)
+  return responses[randomIndex] || '抱歉，我现在无法回答你的问题。'
 }
 
 // 格式化消息内容
-const formatMessage = (content) => {
+const formatMessage = (content: string): string => {
   // 简单的换行处理
   return content.replace(/\n/g, '<br>')
 }
 
 // 格式化时间
-const formatTime = (timestamp) => {
+const formatTime = (timestamp: Date): string => {
   return timestamp.toLocaleTimeString('zh-CN', { 
     hour: '2-digit', 
     minute: '2-digit' 
@@ -240,26 +248,27 @@ const adjustTextareaHeight = () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #f8fafc;
+  background: #F9FAFB;
 }
 
 /* 页面头部 */
 .page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 20px;
+  background: white;
+  border-bottom: 1px solid #E5E7EB;
+  color: #111827;
+  padding: 16px 20px;
   text-align: center;
 }
 
 .page-header h1 {
-  font-size: 24px;
-  font-weight: 700;
-  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
 }
 
 .page-header p {
-  font-size: 14px;
-  opacity: 0.9;
+  font-size: 13px;
+  color: #6B7280;
   margin: 0;
 }
 
@@ -306,7 +315,7 @@ const adjustTextareaHeight = () => {
 }
 
 .ai-avatar {
-  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  background: #1F2937;
   color: white;
 }
 
@@ -324,7 +333,7 @@ const adjustTextareaHeight = () => {
 }
 
 .message.user .message-content {
-  background: linear-gradient(135deg, #4F46E5, #7C3AED);
+  background: #1F2937;
   color: white;
 }
 
@@ -350,7 +359,7 @@ const adjustTextareaHeight = () => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #4F46E5;
+  background: #6B7280;
   animation: typing 1.4s infinite ease-in-out;
 }
 
@@ -407,7 +416,7 @@ const adjustTextareaHeight = () => {
 }
 
 .send-button {
-  background: #4F46E5;
+  background: #1F2937;
   color: white;
   border: none;
   border-radius: 50%;
@@ -422,8 +431,7 @@ const adjustTextareaHeight = () => {
 }
 
 .send-button:hover:not(:disabled) {
-  background: #3730A3;
-  transform: scale(1.05);
+  background: #374151;
 }
 
 .send-button:disabled {
@@ -461,9 +469,9 @@ const adjustTextareaHeight = () => {
 }
 
 .question-chip:hover {
-  background: #4F46E5;
+  background: #1F2937;
   color: white;
-  border-color: #4F46E5;
+  border-color: #1F2937;
 }
 
 /* 移动端适配 */

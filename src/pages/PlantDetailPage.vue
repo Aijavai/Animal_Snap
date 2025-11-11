@@ -134,14 +134,14 @@ import { useAnimalStore } from '../store/animal'
 
 const route = useRoute()
 const router = useRouter()
-const plantStore = usePlantStore()
+const animalStore = useAnimalStore()
 
 const plant = ref<any>(null)
 
 // 获取植物详情
 onMounted(() => {
   const plantId = route.params.id as string
-  plant.value = plantStore.getPlantById(plantId)
+  plant.value = animalStore.getAnimalById(plantId)
 })
 
 // 返回上一页

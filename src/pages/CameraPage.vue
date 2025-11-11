@@ -1,6 +1,13 @@
 <template>
   <div class="camera-page">
     <div class="camera-container">
+      <!-- 退出按钮 -->
+      <button class="exit-btn" @click="handleExit">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      
       <div class="camera-preview" ref="cameraPreview">
         <video ref="videoElement" autoplay muted playsinline></video>
         <div class="camera-overlay">
@@ -45,7 +52,7 @@
             <img :src="resultImage" alt="识别结果" class="result-image">
             <div class="animal-details">
               <h4>{{ animalResult.name }}</h4>
-              <p class="confidence">置信度: {{ animalResult.confidence }}%</p>
+              <p class="confidence">置信度: {{ Math.round(animalResult.confidence * 100) }}%</p>
               <p class="description">{{ animalResult.description }}</p>
             </div>
           </div>
@@ -138,23 +145,23 @@ const capturePhoto = () => {
 }
 
 // 模拟动物识别API
-const simulateAnimalIdentification = (imageData: string) => {
+const simulateAnimalIdentification = (_imageData: string) => {
   // 模拟识别延迟
   setTimeout(() => {
     const mockResults = [
       {
         name: '金毛犬',
-        confidence: 95,
+        confidence: 0.95,
         description: '金毛犬是一种大型犬，性格温顺，是优秀的家庭伴侣犬。'
       },
       {
         name: '橘猫',
-        confidence: 88,
+        confidence: 0.88,
         description: '橘猫是常见的家猫品种，性格活泼，容易亲近人类。'
       },
       {
         name: '哈士奇',
-        confidence: 92,
+        confidence: 0.92,
         description: '哈士奇是雪橇犬的一种，精力充沛，需要大量运动。'
       }
     ]
@@ -207,14 +214,23 @@ const saveAnimal = () => {
   
   animalStore.addAnimal(animal)
   closeResult()
-  router.push('/my-animals')
+  router.push('/')
 }
 
 // 清理资源
 const cleanup = () => {
   if (stream) {
     stream.getTracks().forEach(track => track.stop())
+    stream = null
   }
+}
+
+// 退出相机页面
+const handleExit = () => {
+  // 停止相机流
+  cleanup()
+  // 返回首页
+  router.push('/')
 }
 
 onMounted(() => {
@@ -239,6 +255,41 @@ onUnmounted(() => {
   position: relative;
   display: flex;
   flex-direction: column;
+}
+
+/* 退出按钮 */
+.exit-btn {
+  position: absolute;
+  top: max(20px, env(safe-area-inset-top, 20px));
+  left: max(20px, env(safe-area-inset-left, 20px));
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.exit-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+}
+
+.exit-btn:active {
+  transform: scale(0.95);
+}
+
+.exit-btn svg {
+  width: 24px;
+  height: 24px;
 }
 
 .camera-preview {
@@ -359,7 +410,7 @@ onUnmounted(() => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #4CAF50;
+  background: #1F2937;
 }
 
 /* 结果弹窗样式 */
@@ -395,8 +446,9 @@ onUnmounted(() => {
 
 .result-header h3 {
   margin: 0;
-  font-size: 18px;
-  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
 }
 
 .close-btn {
@@ -427,19 +479,20 @@ onUnmounted(() => {
 
 .animal-details h4 {
   margin: 0 0 10px 0;
-  font-size: 20px;
-  color: #333;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
 }
 
 .confidence {
-  color: #4CAF50;
-  font-weight: bold;
+  color: #111827;
+  font-weight: 600;
   margin: 5px 0;
 }
 
 .description {
-  color: #666;
-  font-size: 14px;
+  color: #6B7280;
+  font-size: 13px;
   line-height: 1.5;
   margin: 10px 0 0 0;
 }
@@ -460,12 +513,12 @@ onUnmounted(() => {
 }
 
 .btn-primary {
-  background: #4CAF50;
+  background: #1F2937;
   color: #fff;
 }
 
 .btn-primary:hover {
-  background: #45a049;
+  background: #374151;
 }
 
 .btn-secondary {
@@ -475,5 +528,39 @@ onUnmounted(() => {
 
 .btn-secondary:hover {
   background: #e0e0e0;
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .exit-btn {
+    width: 40px;
+    height: 40px;
+    top: max(16px, env(safe-area-inset-top, 16px));
+    left: max(16px, env(safe-area-inset-left, 16px));
+  }
+  
+  .exit-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .camera-controls {
+    padding: 0 30px;
+  }
+  
+  .control-btn {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .capture-btn {
+    width: 72px;
+    height: 72px;
+  }
+  
+  .capture-inner {
+    width: 54px;
+    height: 54px;
+  }
 }
 </style>

@@ -94,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { debounce } from '../utils/performance'
 
 interface Props {
@@ -193,17 +193,17 @@ const formatDate = (dateString: string) => {
 <style scoped>
 .animal-card {
   background: white;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s ease;
   cursor: pointer;
   position: relative;
 }
 
 .animal-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+  border-color: #1F2937;
 }
 
 .animal-card.loading {
@@ -211,7 +211,7 @@ const formatDate = (dateString: string) => {
 }
 
 .animal-card.error {
-  border: 2px solid #EF4444;
+  border: 1px solid #EF4444;
 }
 
 .card-image {
@@ -242,10 +242,10 @@ const formatDate = (dateString: string) => {
 }
 
 .loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #E5E7EB;
-  border-top: 3px solid #4F46E5;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #E5E7EB;
+  border-top: 2px solid #1F2937;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -283,15 +283,14 @@ const formatDate = (dateString: string) => {
 
 .confidence-badge {
   position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(16, 185, 129, 0.9);
+  bottom: 10px;
+  left: 10px;
+  background: #1F2937;
   color: white;
   padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 500;
 }
 
 .card-content {
@@ -299,17 +298,17 @@ const formatDate = (dateString: string) => {
 }
 
 .card-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  color: #1F2937;
+  color: #111827;
   margin: 0 0 4px 0;
   line-height: 1.4;
 }
 
 .card-species {
-  font-size: 14px;
-  color: #6B7280;
-  margin: 0 0 8px 0;
+  font-size: 12px;
+  color: #9CA3AF;
+  margin: 0 0 6px 0;
   font-style: italic;
 }
 
@@ -365,12 +364,12 @@ const formatDate = (dateString: string) => {
 }
 
 .action-button.primary {
-  background: #4F46E5;
+  background: #1F2937;
   color: white;
 }
 
 .action-button.primary:hover {
-  background: #3730A3;
+  background: #374151;
 }
 
 .action-button.secondary {

@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 // 解构props
-const { type, size, variant, text, overlay } = props
+const { type, size, variant, text } = props
 </script>
 
 <style scoped>

@@ -10,12 +10,6 @@ const router = createRouter({
       meta: { title: '首页', preload: true }
     },
     {
-      path: '/test',
-      name: 'Test',
-      component: () => import(/* webpackChunkName: "test" */ '../pages/TestPage.vue'),
-      meta: { title: '测试页面' }
-    },
-    {
       path: '/diagnosis',
       name: 'Diagnosis',
       component: () => import(/* webpackChunkName: "diagnosis" */ '../pages/DiagnosisPage.vue'),
@@ -25,7 +19,7 @@ const router = createRouter({
       path: '/camera',
       name: 'Camera',
       component: () => import(/* webpackChunkName: "camera" */ '../pages/CameraPage.vue'),
-      meta: { title: '拍照识别' }
+      meta: { title: '拍照识别', showNav: false }
     },
     {
       path: '/expert',
@@ -43,13 +37,25 @@ const router = createRouter({
       path: '/animal-detail/:id',
       name: 'AnimalDetail',
       component: () => import(/* webpackChunkName: "animal-detail" */ '../pages/AnimalDetailPage.vue'),
-      meta: { title: '动物详情' }
+      meta: { title: '动物详情', showNav: false }
+    },
+    {
+      path: '/test',
+      name: 'Test',
+      component: () => import(/* webpackChunkName: "test" */ '../pages/TestPage.vue'),
+      meta: { title: '测试页面', showNav: false }
+    },
+    {
+      path: '/search',
+      name: 'Search',
+      component: () => import(/* webpackChunkName: "search" */ '../pages/SearchPage.vue'),
+      meta: { title: '搜索', showNav: false }
     }
   ]
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   // 设置页面标题
   if (to.meta.title) {
     document.title = `${to.meta.title} - AnimalSnap`
