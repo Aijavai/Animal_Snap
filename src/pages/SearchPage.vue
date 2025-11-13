@@ -455,18 +455,18 @@ onUnmounted(() => {
 <style scoped>
 .search-page {
   min-height: 100vh;
-  background: #f5f7fa;
+  background: var(--color-bg-secondary);
   padding-bottom: 20px;
 }
 
 /* 搜索头部 */
 .search-header {
-  background: white;
+  background: var(--color-bg-primary);
   padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -476,19 +476,19 @@ onUnmounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #f5f7fa;
+  background: var(--color-bg-primary);
   border: none;
-  color: #333;
+  color: var(--color-text-primary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   flex-shrink: 0;
 }
 
 .back-btn:hover {
-  background: #e5e7eb;
+  background: var(--color-bg-tertiary);
   transform: scale(1.05);
 }
 
@@ -502,7 +502,7 @@ onUnmounted(() => {
 
 /* 搜索建议下拉框 */
 .search-suggestions {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 0 0 16px 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   margin-top: -1px;
@@ -515,7 +515,7 @@ onUnmounted(() => {
 }
 
 .suggestions-section + .suggestions-section {
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--color-border);
 }
 
 .section-title {
@@ -525,18 +525,18 @@ onUnmounted(() => {
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   margin-bottom: 12px;
 }
 
 .section-title svg {
-  color: #4F46E5;
+  color: var(--color-accent);
 }
 
 .clear-history-btn {
   background: none;
   border: none;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-size: 12px;
   cursor: pointer;
   padding: 4px 8px;
@@ -545,8 +545,8 @@ onUnmounted(() => {
 }
 
 .clear-history-btn:hover {
-  background: #f3f4f6;
-  color: #4F46E5;
+  background: var(--color-bg-tertiary);
+  color: var(--color-accent);
 }
 
 /* 热门搜索标签 */
@@ -557,20 +557,20 @@ onUnmounted(() => {
 }
 
 .hot-search-tag {
-  background: #f0f4ff;
-  color: #4F46E5;
-  border: 1px solid #c7d2fe;
+  background: var(--color-bg-tertiary);
+  color: var(--color-accent);
+  border: 1px solid var(--color-border);
   border-radius: 20px;
-  padding: 6px 12px;
-  font-size: 13px;
+  padding: 8px 16px;
+  font-size: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .hot-search-tag:hover {
-  background: #4F46E5;
-  color: white;
-  border-color: #4F46E5;
+  background: var(--color-accent);
+  color: var(--color-bg-primary);
+  border-color: var(--color-accent);
   transform: translateY(-1px);
 }
 
@@ -586,7 +586,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 10px;
-  background: #f8fafc;
+  background: var(--color-bg-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -596,24 +596,24 @@ onUnmounted(() => {
 }
 
 .history-item:hover {
-  background: #f0f4ff;
+  background: var(--color-bg-tertiary);
 }
 
 .history-item svg:first-child {
-  color: #6B7280;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
 .history-item span {
   flex: 1;
-  color: #1F2937;
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
 .remove-history {
   background: none;
   border: none;
-  color: #9CA3AF;
+  color: var(--color-text-secondary);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -625,8 +625,8 @@ onUnmounted(() => {
 }
 
 .remove-history:hover {
-  background: #fee2e2;
-  color: #ef4444;
+  background: var(--color-error);
+  color: var(--color-bg-primary);
 }
 
 /* 搜索建议列表 */
@@ -641,7 +641,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #f8fafc;
+  background: var(--color-bg-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -651,23 +651,23 @@ onUnmounted(() => {
 }
 
 .suggestion-item:hover {
-  background: #f0f4ff;
+  background: var(--color-bg-tertiary);
 }
 
 .suggestion-item svg {
-  color: #6B7280;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
 .suggestion-item span {
   flex: 1;
-  color: #1F2937;
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
 .suggestion-item span mark {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--color-warning);
+  color: var(--color-bg-primary);
   padding: 0 2px;
   border-radius: 2px;
   font-weight: 600;
@@ -688,13 +688,13 @@ onUnmounted(() => {
 .section-header h2 {
   font-size: 20px;
   font-weight: 600;
-  color: #1F2937;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .result-count {
   font-size: 14px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -717,30 +717,29 @@ onUnmounted(() => {
 .empty-search h3 {
   font-size: 20px;
   font-weight: 600;
-  color: #1F2937;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .empty-search p {
   font-size: 14px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   margin-bottom: 24px;
 }
 
 .btn-primary {
-  background: #4F46E5;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-bg-primary);
   border: none;
   border-radius: 12px;
   padding: 12px 24px;
   font-size: 16px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
-  background: #4338ca;
+  background: var(--color-primary);
   transform: translateY(-1px);
 }
 
@@ -758,13 +757,13 @@ onUnmounted(() => {
 .empty-state h3 {
   font-size: 24px;
   font-weight: 600;
-  color: #1F2937;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .empty-state p {
   font-size: 16px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
 }
 
 /* 移动端适配 */

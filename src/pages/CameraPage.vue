@@ -410,7 +410,7 @@ onUnmounted(() => {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #1F2937;
+  background: var(--color-primary);
 }
 
 /* 结果弹窗样式 */
@@ -428,7 +428,7 @@ onUnmounted(() => {
 }
 
 .result-content {
-  background: #fff;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   width: 90%;
   max-width: 400px;
@@ -441,14 +441,14 @@ onUnmounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .result-header h3 {
   margin: 0;
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .close-btn {
@@ -456,7 +456,7 @@ onUnmounted(() => {
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .result-body {
@@ -481,17 +481,17 @@ onUnmounted(() => {
   margin: 0 0 10px 0;
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .confidence {
-  color: #111827;
+  color: var(--color-text-primary);
   font-weight: 600;
   margin: 5px 0;
 }
 
 .description {
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 1.5;
   margin: 10px 0 0 0;
@@ -513,21 +513,21 @@ onUnmounted(() => {
 }
 
 .btn-primary {
-  background: #1F2937;
-  color: #fff;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
 }
 
 .btn-primary:hover {
-  background: #374151;
+  background: var(--color-primary-light);
 }
 
 .btn-secondary {
-  background: #f5f5f5;
-  color: #333;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
 }
 
 .btn-secondary:hover {
-  background: #e0e0e0;
+  background: var(--color-border);
 }
 
 /* 移动端适配 */

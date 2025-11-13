@@ -328,7 +328,7 @@ const clearData = () => {
   height: 64px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #E5E7EB;
+  border: 2px solid var(--color-border);
   flex-shrink: 0;
 }
 
@@ -350,7 +350,7 @@ const clearData = () => {
 
 .user-info p {
   font-size: 13px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   margin: 0 0 12px 0;
 }
 

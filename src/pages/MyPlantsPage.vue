@@ -86,7 +86,7 @@ const formatDate = (dateString: string) => {
 .my-plants-page {
   padding: 20px;
   min-height: 100vh;
-  background: #f8f9fa;
+  background: var(--color-bg-secondary);
 }
 
 .page-header {
@@ -97,12 +97,12 @@ const formatDate = (dateString: string) => {
 .page-header h1 {
   margin: 0 0 10px 0;
   font-size: 28px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .plant-count {
   margin: 0;
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 16px;
 }
 
@@ -112,38 +112,37 @@ const formatDate = (dateString: string) => {
 }
 
 .empty-icon {
-  color: #ddd;
+  color: var(--color-text-tertiary);
   margin-bottom: 20px;
 }
 
 .empty-state h3 {
   margin: 0 0 10px 0;
   font-size: 20px;
-  color: #666;
+  color: var(--color-text-secondary);
 }
 
 .empty-state p {
   margin: 0 0 30px 0;
-  color: #999;
+  color: var(--color-text-tertiary);
   font-size: 16px;
 }
 
 .start-btn {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: #4CAF50;
-  color: #fff;
+  background: var(--color-success);
+  color: var(--color-bg-primary);
   border: none;
   border-radius: 25px;
-  font-size: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .start-btn:hover {
-  background: #45a049;
+  background: var(--color-primary);
   transform: translateY(-2px);
 }
 
@@ -154,18 +153,17 @@ const formatDate = (dateString: string) => {
 }
 
 .plant-card {
-  background: #fff;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
+  box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
   position: relative;
 }
 
 .plant-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .plant-image {
@@ -184,8 +182,8 @@ const formatDate = (dateString: string) => {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(76, 175, 80, 0.9);
-  color: #fff;
+  background: var(--color-success);
+  color: var(--color-bg-primary);
   padding: 4px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -199,12 +197,12 @@ const formatDate = (dateString: string) => {
 .plant-info h3 {
   margin: 0 0 8px 0;
   font-size: 18px;
-  color: #333;
+  color: var(--color-text-primary);
 }
 
 .plant-date {
   margin: 0;
-  color: #666;
+  color: var(--color-text-secondary);
   font-size: 14px;
 }
 
@@ -215,9 +213,9 @@ const formatDate = (dateString: string) => {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--color-bg-primary);
   border: none;
-  color: #666;
+  color: var(--color-text-secondary);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -231,8 +229,8 @@ const formatDate = (dateString: string) => {
 }
 
 .delete-btn:hover {
-  background: #ff4444;
-  color: #fff;
+  background: var(--color-error);
+  color: var(--color-bg-primary);
 }
 
 @media (max-width: 768px) {

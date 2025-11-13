@@ -9,7 +9,7 @@
     <div v-if="showBottomNav" class="bottom-nav">
       <div class="nav-item" :class="{ active: activeTab === 'home' }" @click="goToPage('home')">
         <div class="nav-icon">
-          <van-icon name="home-o" :color="activeTab === 'home' ? '#1F2937' : '#9CA3AF'" size="22" />
+          <van-icon name="home-o" :color="activeTab === 'home' ? 'var(--color-primary)' : 'var(--color-text-tertiary)'" size="22" />
         </div>
         <span class="nav-label">首页</span>
       </div>
@@ -27,13 +27,13 @@
               cx="12" 
               cy="12" 
               r="10" 
-              :stroke="activeTab === 'diagnosis' ? '#1F2937' : '#9CA3AF'"
+              :stroke="activeTab === 'diagnosis' ? 'var(--color-primary)' : 'var(--color-text-tertiary)'"
               stroke-width="2"
               fill="none"
             />
             <path 
               d="M9 12l2 2 4-4" 
-              :stroke="activeTab === 'diagnosis' ? '#1F2937' : '#9CA3AF'"
+              :stroke="activeTab === 'diagnosis' ? 'var(--color-primary)' : 'var(--color-text-tertiary)'"
               stroke-width="2"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -53,14 +53,14 @@
       
       <div class="nav-item" :class="{ active: activeTab === 'expert' }" @click="goToPage('expert')">
         <div class="nav-icon">
-          <van-icon name="service" :color="activeTab === 'expert' ? '#1F2937' : '#9CA3AF'" size="22" />
+          <van-icon name="service" :color="activeTab === 'expert' ? 'var(--color-primary)' : 'var(--color-text-tertiary)'" size="22" />
         </div>
         <span class="nav-label">专家</span>
       </div>
       
       <div class="nav-item" :class="{ active: activeTab === 'profile' }" @click="goToPage('profile')">
         <div class="nav-icon">
-          <van-icon name="user-o" :color="activeTab === 'profile' ? '#1F2937' : '#9CA3AF'" size="22" />
+          <van-icon name="user-o" :color="activeTab === 'profile' ? 'var(--color-primary)' : 'var(--color-text-tertiary)'" size="22" />
         </div>
         <span class="nav-label">我的</span>
       </div>

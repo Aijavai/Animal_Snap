@@ -248,14 +248,14 @@ const adjustTextareaHeight = () => {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background: #F9FAFB;
+  background: var(--color-bg-secondary);
 }
 
 /* 页面头部 */
 .page-header {
-  background: white;
-  border-bottom: 1px solid #E5E7EB;
-  color: #111827;
+  background: var(--color-bg-primary);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-primary);
   padding: 16px 20px;
   text-align: center;
 }
@@ -268,7 +268,7 @@ const adjustTextareaHeight = () => {
 
 .page-header p {
   font-size: 13px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   margin: 0;
 }
 
@@ -315,26 +315,26 @@ const adjustTextareaHeight = () => {
 }
 
 .ai-avatar {
-  background: #1F2937;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
 }
 
 .user-avatar {
-  background: #E5E7EB;
-  color: #6B7280;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
 }
 
 .message-content {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 18px;
   padding: 12px 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   position: relative;
 }
 
 .message.user .message-content {
-  background: #1F2937;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
 }
 
 .message-text {
@@ -345,7 +345,8 @@ const adjustTextareaHeight = () => {
 
 .message-time {
   font-size: 11px;
-  opacity: 0.6;
+  color: var(--color-text-tertiary);
+  text-align: right;
 }
 
 /* 加载动画 */
@@ -359,7 +360,7 @@ const adjustTextareaHeight = () => {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #6B7280;
+  background: var(--color-text-secondary);
   animation: typing 1.4s infinite ease-in-out;
 }
 
@@ -384,17 +385,17 @@ const adjustTextareaHeight = () => {
 
 /* 输入区域 */
 .input-container {
-  background: white;
-  border-top: 1px solid #E5E7EB;
+  background: var(--color-bg-primary);
+  border-top: 1px solid var(--color-border);
   padding: 16px 20px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
 }
 
-.input-wrapper {
+.input-area {
   display: flex;
   align-items: flex-end;
   gap: 12px;
-  background: #F3F4F6;
+  background: var(--color-bg-tertiary);
   border-radius: 24px;
   padding: 8px 12px;
 }
@@ -412,16 +413,16 @@ const adjustTextareaHeight = () => {
 }
 
 .input-wrapper textarea::placeholder {
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
 }
 
 .send-button {
-  background: #1F2937;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
   border: none;
   border-radius: 50%;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -431,11 +432,11 @@ const adjustTextareaHeight = () => {
 }
 
 .send-button:hover:not(:disabled) {
-  background: #374151;
+  background: var(--color-primary-light);
 }
 
 .send-button:disabled {
-  background: #D1D5DB;
+  background: var(--color-text-tertiary);
   cursor: not-allowed;
 }
 
@@ -447,7 +448,7 @@ const adjustTextareaHeight = () => {
 .quick-questions h3 {
   font-size: 14px;
   font-weight: 600;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   margin: 0 0 12px 0;
 }
 
@@ -458,20 +459,20 @@ const adjustTextareaHeight = () => {
 }
 
 .question-chip {
-  background: white;
-  border: 1px solid #E5E7EB;
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 12px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .question-chip:hover {
-  background: #1F2937;
-  color: white;
-  border-color: #1F2937;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
+  border-color: var(--color-primary);
 }
 
 /* 移动端适配 */

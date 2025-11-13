@@ -49,13 +49,13 @@
       
       <div class="action-grid">
         <div class="action-card secondary" @click="goToDiagnosis">
-          <div class="action-icon">
+          <div class="action-icon diagnosis-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M9 12l2 2 4-4" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M21 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="#10B981" stroke-width="2"/>
-              <path d="M3 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="#10B981" stroke-width="2"/>
-              <path d="M12 21c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="#10B981" stroke-width="2"/>
-              <path d="M12 3c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="#10B981" stroke-width="2"/>
+              <path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M21 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="currentColor" stroke-width="2"/>
+              <path d="M3 12c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 21c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 3c.552 0 1-.448 1-1s-.448-1-1-1-1 .448-1 1 .448 1 1 1z" stroke="currentColor" stroke-width="2"/>
             </svg>
           </div>
           <div class="action-content">
@@ -65,12 +65,12 @@
         </div>
         
         <div class="action-card secondary" @click="goToExpert">
-          <div class="action-icon">
+          <div class="action-icon expert-icon">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="12" cy="7" r="4" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M6 21v-2a4 4 0 0 1 4-4h.5" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M6 21v-2a4 4 0 0 1 4-4h.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
           </div>
           <div class="action-content">
@@ -610,14 +610,14 @@ onUnmounted(() => {
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.98);
+  background: var(--color-bg-primary);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
   backdrop-filter: blur(20px);
   z-index: 100;
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid rgba(79, 70, 229, 0.1);
+  border: 1px solid var(--color-border);
 }
 
 .suggestions-section {
@@ -625,7 +625,7 @@ onUnmounted(() => {
 }
 
 .suggestions-section + .suggestions-section {
-  border-top: 1px solid #f3f4f6;
+  border-top: 1px solid var(--color-border-light);
 }
 
 .section-title {
@@ -635,18 +635,18 @@ onUnmounted(() => {
   gap: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   margin-bottom: 12px;
 }
 
 .section-title svg {
-  color: #6B7280;
+  color: var(--color-text-secondary);
 }
 
 .clear-history-btn {
   background: none;
   border: none;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-size: 12px;
   cursor: pointer;
   padding: 4px 8px;
@@ -655,8 +655,8 @@ onUnmounted(() => {
 }
 
 .clear-history-btn:hover {
-  background: #F3F4F6;
-  color: #1F2937;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
 }
 
 /* 热门搜索标签 */
@@ -667,9 +667,9 @@ onUnmounted(() => {
 }
 
 .hot-search-tag {
-  background: #F3F4F6;
-  color: #4B5563;
-  border: 1px solid #E5E7EB;
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
   border-radius: 16px;
   padding: 6px 12px;
   font-size: 12px;
@@ -678,9 +678,9 @@ onUnmounted(() => {
 }
 
 .hot-search-tag:hover {
-  background: #1F2937;
-  color: white;
-  border-color: #1F2937;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
+  border-color: var(--color-primary);
 }
 
 /* 搜索历史 */
@@ -695,7 +695,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 10px;
-  background: #f8fafc;
+  background: var(--color-bg-secondary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -705,24 +705,24 @@ onUnmounted(() => {
 }
 
 .history-item:hover {
-  background: #F3F4F6;
+  background: var(--color-bg-tertiary);
 }
 
 .history-item svg:first-child {
-  color: #6B7280;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
 .history-item span {
   flex: 1;
-  color: #1F2937;
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
 .remove-history {
   background: none;
   border: none;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
   cursor: pointer;
   padding: 4px;
   border-radius: 4px;
@@ -734,8 +734,8 @@ onUnmounted(() => {
 }
 
 .remove-history:hover {
-  background: #fee2e2;
-  color: #ef4444;
+  background: var(--color-error);
+  color: var(--color-bg-primary);
 }
 
 /* 搜索建议列表 */
@@ -750,7 +750,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: #f8fafc;
+  background: var(--color-bg-secondary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -760,23 +760,23 @@ onUnmounted(() => {
 }
 
 .suggestion-item:hover {
-  background: #F3F4F6;
+  background: var(--color-bg-tertiary);
 }
 
 .suggestion-item svg {
-  color: #6B7280;
+  color: var(--color-text-secondary);
   flex-shrink: 0;
 }
 
 .suggestion-item span {
   flex: 1;
-  color: #1F2937;
+  color: var(--color-text-primary);
   font-size: 14px;
 }
 
 .suggestion-item span mark {
-  background: #fef3c7;
-  color: #92400e;
+  background: var(--color-warning);
+  color: var(--color-bg-primary);
   padding: 0 2px;
   border-radius: 2px;
   font-weight: 600;
@@ -785,6 +785,12 @@ onUnmounted(() => {
 /* 快速操作 */
 .quick-actions {
   margin-bottom: 30px;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 .action-card {
@@ -818,6 +824,13 @@ onUnmounted(() => {
   color: var(--color-text-primary);
 }
 
+.action-content h4 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: var(--color-text-primary);
+}
+
 .action-card.primary .action-content h3 {
   color: white;
 }
@@ -828,6 +841,24 @@ onUnmounted(() => {
   opacity: 0.8;
 }
 
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.diagnosis-icon {
+  color: var(--color-success);
+}
+
+.expert-icon {
+  color: var(--color-warning);
+}
+
 .action-arrow {
   font-size: 20px;
   margin-left: auto;
@@ -835,17 +866,17 @@ onUnmounted(() => {
 
 /* 统计仪表板 */
 .stats-dashboard {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 }
 
 .stats-dashboard h2 {
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 16px;
 }
 
@@ -860,13 +891,13 @@ onUnmounted(() => {
   align-items: center;
   gap: 10px;
   padding: 14px;
-  background: #F9FAFB;
+  background: var(--color-bg-secondary);
   border-radius: 12px;
   transition: all 0.2s ease;
 }
 
 .stat-card:hover {
-  background: #F3F4F6;
+  background: var(--color-bg-tertiary);
 }
 
 .stat-icon {
@@ -876,27 +907,27 @@ onUnmounted(() => {
 .stat-content h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 2px;
 }
 
 .stat-content p {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
 }
 
 /* 搜索结果 */
 .search-results {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 }
 
 .result-count {
   font-size: 14px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-weight: 500;
 }
 
@@ -913,23 +944,23 @@ onUnmounted(() => {
 .empty-search h3 {
   font-size: 16px;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .empty-search p {
   font-size: 13px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
   margin-bottom: 20px;
 }
 
 /* 最近动物 */
 .recent-animals {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   padding: 20px;
   margin-bottom: 24px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 }
 
 .section-header {
@@ -942,13 +973,13 @@ onUnmounted(() => {
 .section-header h2 {
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .view-all-btn {
   background: none;
   border: none;
-  color: #6B7280;
+  color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
@@ -956,7 +987,7 @@ onUnmounted(() => {
 }
 
 .view-all-btn:hover {
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .animals-grid {
@@ -967,29 +998,29 @@ onUnmounted(() => {
 
 /* 底部提示 */
 .bottom-tip {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   padding: 24px;
   text-align: center;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 }
 
 .tip-content h3 {
   font-size: 16px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .tip-content p {
   font-size: 13px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
   margin-bottom: 16px;
 }
 
 .btn-primary {
-  background: #1F2937;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
   border: none;
   border-radius: 10px;
   padding: 10px 20px;
@@ -1003,7 +1034,7 @@ onUnmounted(() => {
 }
 
 .btn-primary:hover {
-  background: #374151;
+  background: var(--color-primary-light);
 }
 
 /* 移动端适配 */
@@ -1031,92 +1062,5 @@ onUnmounted(() => {
   }
 }
 
-/* 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .home-page {
-    background: #111827;
-  }
-  
-  .greeting h1 {
-    color: #F9FAFB;
-  }
-  
-  .greeting p {
-    color: #9CA3AF;
-  }
-  
-  .weather-info {
-    background: #1F2937;
-    border-color: #374151;
-  }
-  
-  .temperature {
-    color: #F9FAFB;
-  }
-  
-  .location {
-    color: #9CA3AF;
-  }
-  
-  .action-card {
-    background: #1F2937;
-    border-color: #374151;
-  }
-  
-  .action-card.primary {
-    background: #F9FAFB;
-    color: #111827;
-  }
-  
-  .action-card.secondary .action-icon {
-    background: #374151;
-  }
-  
-  .action-content h4 {
-    color: #F9FAFB;
-  }
-  
-  .stats-dashboard,
-  .search-results,
-  .recent-animals,
-  .bottom-tip {
-    background: #1F2937;
-    border-color: #374151;
-  }
-  
-  .stats-dashboard h2,
-  .section-header h2,
-  .tip-content h3 {
-    color: #F9FAFB;
-  }
-  
-  .stat-card {
-    background: #111827;
-  }
-  
-  .stat-content h3 {
-    color: #F9FAFB;
-  }
-  
-  .btn-primary {
-    background: #F9FAFB;
-    color: #111827;
-  }
-  
-  .btn-primary:hover {
-    background: #E5E7EB;
-  }
-  
-  .hot-search-tag {
-    background: #374151;
-    color: #D1D5DB;
-    border-color: #4B5563;
-  }
-  
-  .hot-search-tag:hover {
-    background: #F9FAFB;
-    color: #111827;
-    border-color: #F9FAFB;
-  }
-}
+/* 深色模式样式已通过CSS变量自动处理 */
 </style>

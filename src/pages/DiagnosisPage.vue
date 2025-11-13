@@ -381,14 +381,14 @@ onMounted(() => {
 <style scoped>
 .diagnosis-page {
   min-height: 100vh;
-  background: #F9FAFB;
+  background: var(--color-bg-secondary);
   padding: 16px;
   padding-bottom: 100px;
 }
 
 .page-header {
   text-align: center;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 24px;
   padding-top: 8px;
 }
@@ -401,7 +401,7 @@ onMounted(() => {
 
 .page-header p {
   font-size: 14px;
-  color: #6B7280;
+  color: var(--color-text-secondary);
 }
 
 /* 步骤指示器 */
@@ -413,10 +413,10 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   padding: 16px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 }
 
 .step {
@@ -424,66 +424,67 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
   transition: all 0.2s ease;
   font-size: 12px;
 }
 
 .step.active {
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .step.completed {
-  color: #6B7280;
+  color: var(--color-text-secondary);
 }
 
 .step-number {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #F3F4F6;
+  background: var(--color-bg-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 500;
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
   transition: all 0.2s ease;
 }
 
 .step.active .step-number {
-  background: #1F2937;
-  color: white;
+  background: var(--color-primary);
+  color: var(--color-bg-primary);
 }
 
 .step.completed .step-number {
-  background: #6B7280;
-  color: white;
+  background: var(--color-text-secondary);
+  color: var(--color-bg-primary);
 }
 
 .step-line {
   width: 40px;
   height: 1px;
-  background: #E5E7EB;
+  background: var(--color-border);
   margin: 0 8px;
   transition: all 0.2s ease;
 }
 
 .step-line.active {
-  background: #1F2937;
+  background: var(--color-primary);
 }
 
 /* 步骤内容 */
 .step-content {
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid #E5E7EB;
+  border: 1px solid var(--color-border);
 }
 
 .step-panel h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 20px;
   text-align: center;
 }
@@ -497,23 +498,23 @@ onMounted(() => {
 }
 
 .category-card {
-  background: #F9FAFB;
-  border: 1px solid #E5E7EB;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 16px;
-  text-align: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
 }
 
 .category-card:hover {
-  border-color: #1F2937;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .category-card.selected {
-  border-color: #1F2937;
-  background: #F3F4F6;
+  border-color: var(--color-primary);
+  background: var(--color-bg-secondary);
 }
 
 .category-icon {
@@ -524,18 +525,18 @@ onMounted(() => {
 .category-card h4 {
   font-size: 14px;
   font-weight: 500;
-  color: #111827;
+  color: var(--color-text-primary);
   margin-bottom: 6px;
 }
 
 .category-card p {
   font-size: 11px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
 }
 
 /* 上传区域 */
 .upload-area {
-  border: 2px dashed #d1d5db;
+  border: 2px dashed var(--color-border);
   border-radius: 16px;
   padding: 40px;
   text-align: center;
@@ -545,17 +546,17 @@ onMounted(() => {
 }
 
 .upload-area:hover {
-  border-color: #1F2937;
-  background: #F9FAFB;
+  border-color: var(--color-primary);
+  background: var(--color-bg-secondary);
 }
 
 .upload-placeholder {
-  color: #6B7280;
+  color: var(--color-text-secondary);
 }
 
 .upload-placeholder svg {
   margin-bottom: 16px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
 }
 
 .upload-placeholder p {
@@ -566,7 +567,7 @@ onMounted(() => {
 
 .upload-placeholder span {
   font-size: 14px;
-  color: #9CA3AF;
+  color: var(--color-text-tertiary);
 }
 
 .uploaded-image {
@@ -583,13 +584,13 @@ onMounted(() => {
 
 .remove-image {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: 8px;
+  right: 8px;
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #ef4444;
-  color: white;
+  background: var(--color-error);
+  color: var(--color-bg-primary);
   border: none;
   font-size: 16px;
   cursor: pointer;
@@ -652,7 +653,7 @@ onMounted(() => {
   left: 50%;
   width: 60px;
   height: 60px;
-  border: 2px solid #1F2937;
+  border: 2px solid var(--color-primary);
   border-radius: 50%;
   transform: translate3d(-50%, -50%, 0);
   animation: pulse 2s infinite;
@@ -681,7 +682,7 @@ onMounted(() => {
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: #e5e7eb;
+  background: var(--color-border);
   border-radius: 4px;
   overflow: hidden;
   margin-top: 20px;
@@ -689,7 +690,7 @@ onMounted(() => {
 
 .progress-fill {
   height: 100%;
-  background: #1F2937;
+  background: var(--color-primary);
   border-radius: 4px;
   transition: width 0.3s ease;
 }
