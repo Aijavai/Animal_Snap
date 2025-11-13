@@ -59,16 +59,18 @@
 
     <!-- 输入区域 -->
     <div class="input-container">
-      <div class="input-wrapper">
-        <textarea
-          v-model="inputMessage"
-          @keydown.enter.prevent="handleSendMessage"
-          placeholder="输入你的动物相关问题..."
-          :disabled="isLoading"
-          rows="1"
-          ref="messageInput"
-          @input="adjustTextareaHeight"
-        ></textarea>
+      <div class="input-area">
+        <div class="input-wrapper">
+          <textarea
+            v-model="inputMessage"
+            @keydown.enter.prevent="handleSendMessage"
+            placeholder="输入你的动物相关问题..."
+            :disabled="isLoading"
+            rows="1"
+            ref="messageInput"
+            @input="adjustTextareaHeight"
+          ></textarea>
+        </div>
         <button 
           @click="handleSendMessage" 
           :disabled="!inputMessage.trim() || isLoading"
@@ -249,6 +251,7 @@ const adjustTextareaHeight = () => {
   display: flex;
   flex-direction: column;
   background: var(--color-bg-secondary);
+  overflow: hidden;
 }
 
 /* 页面头部 */
@@ -276,10 +279,8 @@ const adjustTextareaHeight = () => {
 .chat-container {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  padding: 16px 20px;
+  min-height: 0;
 }
 
 .chat-messages {
@@ -337,6 +338,10 @@ const adjustTextareaHeight = () => {
   color: var(--color-bg-primary);
 }
 
+.message.user .message-time {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 .message-text {
   font-size: 14px;
   line-height: 1.5;
@@ -389,6 +394,7 @@ const adjustTextareaHeight = () => {
   border-top: 1px solid var(--color-border);
   padding: 16px 20px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  flex-shrink: 0;
 }
 
 .input-area {
@@ -397,11 +403,18 @@ const adjustTextareaHeight = () => {
   gap: 12px;
   background: var(--color-bg-tertiary);
   border-radius: 24px;
-  padding: 8px 12px;
+  padding: 4px 8px 4px 16px;
+  min-height: 48px;
+}
+
+.input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
 }
 
 .input-wrapper textarea {
-  flex: 1;
+  width: 100%;
   border: none;
   outline: none;
   background: transparent;
@@ -410,6 +423,7 @@ const adjustTextareaHeight = () => {
   resize: none;
   max-height: 120px;
   min-height: 20px;
+  padding: 8px 0;
 }
 
 .input-wrapper textarea::placeholder {
@@ -486,7 +500,7 @@ const adjustTextareaHeight = () => {
   }
   
   .chat-container {
-    padding: 16px;
+    padding: 12px 16px;
   }
   
   .message {
@@ -495,6 +509,11 @@ const adjustTextareaHeight = () => {
   
   .input-container {
     padding: 12px 16px;
+    padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  }
+  
+  .input-area {
+    padding: 4px 6px 4px 12px;
   }
   
   .question-chips {
